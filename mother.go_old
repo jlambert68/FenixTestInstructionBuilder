@@ -1,0 +1,204 @@
+package main
+
+import (
+	"google.golang.org/grpc"
+	"jlambert/FenixInception3/FenixTestInstructionBuilder/grpc_api/mother_server_grpc_api"
+	"net"
+	"time"
+	"os"
+	"os/signal"
+	"syscall"
+	"fmt"
+	//"golang.org/x/net/context"
+	"github.com/sirupsen/logrus"
+	//"jlambert/FenixInception3/FenixTestInstructionBuilder//grpc_api/mother_server_grpc_api"
+	"jlambert/FenixInception3/FenixTestInstructionBuilder/common_config"
+	//"jlambert/AllCombinations/user_gui/webmain"
+	//"jlambert/AllCombinations/grpc_api/worker_server_grpc_api"
+)
+
+/*
+//TODO Denna funktion ska tas bort
+func (workerObject *MotherObject_struct) SendMotherIpAndPortForWorker(myIP string, myPort string) () {
+
+	var err error
+
+	// Set up connection to Mother Server
+	remoteWorkerServerConnection, err = grpc.Dial(mother_address_to_dial, grpc.WithInsecure())
+	if err != nil {
+		workerObject.logger.WithFields(logrus.Fields{
+			"mother_address_to_dial": mother_address_to_dial,
+			"error message":          err,
+		}).Error("Did not connect to Mother Server!")
+		os.Exit(0)
+	} else {
+		workerObject.logger.WithFields(logrus.Fields{
+			"mother_address_to_dial": mother_address_to_dial,
+		}).Info("gRPC connection OK to Mother Server!")
+
+		// Creates a new Clients
+		workerClient := mother_server_grpc_api.NewMotherServerClient(remoteWorkerServerConnection)
+
+		messageToMother := &mother_server_grpc_api.WorkerInformation{myIP, myPort}
+		ctx := context.Background()
+		returnMessage, err := workerClient.WorkerIPandPortIs(ctx, messageToMother)
+		if err != nil {
+			workerObject.logger.WithFields(logrus.Fields{
+				"client": workerClient,
+				"error":  err,
+			}).Fatal("Problem to connect to Mother Server")
+		}
+
+		workerObject.logger.WithFields(logrus.Fields{
+			"returnMessage: ": returnMessage,
+			"IP: ":            myIP,
+			"Port: ":          myPort,
+		}).Info("Sent IP and Port to Mother Server")
+
+	}
+
+}
+*/
+// Used for only process cleanup once
+var cleanupProcessed bool = false
+
+func cleanup() {
+
+	if cleanupProcessed == false {
+
+		cleanupProcessed = true
+
+		// Cleanup before close down application
+		motherObject.logger.WithFields(logrus.Fields{
+			"ID": "ab1abcdb-d786-4bcc-b274-b52bd931f43d",
+		}).Info("Clean up and shut down servers")
+
+		motherObject.logger.WithFields(logrus.Fields{
+			"ID": "a22e8de2-c38c-4483-95e0-e9dc21dd7ca8",
+		}).Info("Gracefull stop for: registerTaxiHardwareStreamServer")
+
+		registerMotherServer.GracefulStop()
+
+		motherObject.logger.WithFields(logrus.Fields{
+			"common_config.MotherServer_port: ": common_config.MotherServer_port,
+			"ID": "19593393-3ac9-45ac-96e9-cdf911b167c7",
+		}).Info("Close net.Listing")
+		lis.Close()
+
+		//log.Println("Close DB_session: %v", DB_session)
+		//DB_session.Close()
+	}
+}
+
+func Mother_main() {
+
+	var err error
+
+	defer cleanup()
+
+
+
+	// Set up WorkerObject
+	motherObject = &MotherObject_struct{
+		workerIdChannel: make(chan mother_server_grpc_api.WorkerResult, 10),
+		workerIdToProcessChannel: make(chan int64, 10),
+		messageToWorkerChannel: make(chan worker_server_grpc_api.MessageToWorkerStruct, 10)}
+/*
+	// Connect to SQLite DB
+	motherObject.motherDB, err = openDB()
+	if err != nil {
+		motherObject.logger.WithFields(logrus.Fields{
+			"err: ": err,
+			"ID": "0a58ebb1-f286-47ce-b072-a674f23f581a",
+		}).Fatal("Failed to initiate DB")
+	}
+*/
+
+	// Init logger
+	motherObject.InitLogger("")
+
+	// Find first non allocated port from defined start port
+	motherObject.logger.WithFields(logrus.Fields{
+		"ID": "56b6419f-d714-4ab0-be62-f3c7f08b9558",
+	}).Info("Mother Server tries to start")
+
+	motherObject.logger.WithFields(logrus.Fields{
+		"common_config.MotherServer_port): ": common_config.MotherServer_port,
+		"ID": "8f904ace-9d24-452b-891a-5b8e5c247ba2",
+	}).Info("Start listening on:")
+	lis, err = net.Listen("tcp", string(common_config.MotherServer_port))
+
+	if err != nil {
+		motherObject.logger.WithFields(logrus.Fields{
+			"err: ": err,
+			"ID": "0fbf0f08-6114-4cd8-9992-6a387955fb5f",
+		}).Fatal("failed to listen:")
+
+	} else {
+		motherObject.logger.WithFields(logrus.Fields{
+			"common_config.MotherServer_port): ": common_config.MotherServer_port,
+			"ID": "93496c07-2b6c-4edc-a1f9-3fd555fa1201",
+		}).Info("Success in listening on port:")
+
+	}
+
+	// Creates a new RegisterMotherServer gRPC server
+	go func() {
+		motherObject.logger.WithFields(logrus.Fields{
+			"ID": "ebc26735-9d13-4b13-91b8-20999cd5e254",
+		}).Info("Starting Mother Server")
+
+		registerMotherServer = grpc.NewServer()
+		mother_server_grpc_api.RegisterMotherServerServer(registerMotherServer, &MotherServer{})
+
+		motherObject.logger.WithFields(logrus.Fields{
+			"common_config.MotherServer_port): ": common_config.MotherServer_port,
+			"ID": "cfed87c4-55aa-4cd1-980a-a15eb75ab6fb",
+		}).Info("registerMotherServer for Mother Server started")
+
+		registerMotherServer.Serve(lis)
+	}()
+
+	// Start up 'reassebleEngine' to receive incoming worker objects
+	go motherObject.reassebleEngine()
+
+	//Start up 'sendWorkLoadToWorker' which sends workloads to workers
+	go motherObject.sendWorkLoadToWorker()
+
+	// Start up 'LoadWorkerObjectAndStoreRowsEngine' to extract rows and store them in Database
+	go motherObject.LoadWorkerObjectAndStoreRowsEngine()
+
+
+	// Start up User GUI
+	go webmain.Webmain(
+		motherObject.logger,
+		motherObject.SaveToDB,
+		motherObject.LoadFromDB,
+		motherObject.ListAllActiveProjects,
+		motherObject.createBatches,
+		motherObject.LoadHeadersAndHeaderValuesToJExcel,
+		motherObject.SaveHeadersAndHeaderValuesFromJExcel,
+		motherObject.CreateNewProject,
+		)
+
+	// Just waiting to quit
+	c := make(chan os.Signal, 2)
+	signal.Notify(c, os.Interrupt, syscall.SIGTERM)
+	go func() {
+		<-c
+		cleanup()
+		os.Exit(0)
+	}()
+
+	for {
+		fmt.Println("sleeping...for another 5 minutes")
+		time.Sleep(300 * time.Second) // or runtime.Gosched() or similar per @misterbee
+	}
+
+	//Wait until user exit
+	/*
+   for {
+	   time.Sleep(10)
+   }
+   */
+}

@@ -1,0 +1,213 @@
+package worker_server
+
+import (
+	"fmt"
+	"github.com/Knetic/govaluate"
+	"math"
+	"jlambert/FenixInception3/FenixTestInstructionBuilder/grpc_api/worker_server_grpc_api"
+	"jlambert/FenixInception3/FenixTestInstructionBuilder/grpc_api/mother_server_grpc_api"
+	//"jlambert/FenixInception3/FenixTestInstructionBuilder/common_config"
+	"github.com/sirupsen/logrus"
+	"golang.org/x/net/context"
+	"time"
+)
+
+var serverObject worker_server_grpc_api.CombinationObjectStruct
+/*
+func  createBatches(messageToWorkerChannel chan<- messageToWorker_struct) error {
+
+	var numberOfBatches int32
+	var numberOfRows int64
+	var numberOfHeaders int
+	var i int32
+
+	numberOfHeaders = len(serverObject.Headers)
+
+	numberOfRows = serverObject.Headers[numberOfHeaders-1].NumberOfRowsGenerated
+
+	numberOfBatches = int32(numberOfRows/common_config.MaxBatchSizeSentToWorker) + 1
+
+	// Create batche and put them on a channel, When worker picks workload then create next on
+	for i = 0; i < numberOfBatches; i++ {
+		//messageToWorkerChannel := make(chan messageToWorker_struct)
+		messageToWorkerChannel <- messageToWorker_struct{i * common_config.MaxBatchSizeSentToWorker, common_config.MaxBatchSizeSentToWorker, *serverObject}
+	}
+
+	close(messageToWorkerChannel)
+
+	return nil
+
+}
+*/
+
+//messageToWorkerChannel <-chan messageToWorker_struct
+
+func (workerObject *WorkerObject_struct) workerEngine(taskForWorkerFromMother *worker_server_grpc_api.MessageToWorkerStruct) ([]*mother_server_grpc_api.RowResult, error) {
+
+	var numberOfHeaders int
+	var numberOfHeaderValue float64
+	var headerMultiplicationFactor int64
+	var numberOfRules int
+	var numberOfRuleBlocks int
+	var ruleBlock *worker_server_grpc_api.RuleBaseBlockStruct
+	var row int32
+	var numberOfRows int32
+	var header int
+	var ruleIndex int
+	var ruleBlockIndex int
+	var blockValue string
+	var valueId int32
+	var referencedHeaderIndex int32
+	var executableRule string
+	var blockOperator string
+
+	type inputValueIndexForRule int
+
+	var calculationCounter int32
+
+	/*
+	type rowResultFromWorker_struct struct {
+		row        int32
+		ruleResult bool
+	}
+*/
+	var rowResults []*mother_server_grpc_api.RowResult
+	var currentRowValues []inputValueIndexForRule
+	var currentRule *worker_server_grpc_api.RuleStruct
+	//var workToSendToMotherServer *mother_server_grpc_api.WorkerResult
+
+	// Read from Channel
+	//localMessageFromChannel := <-taskForWorkerFromMother
+
+	// Read number of headers
+	numberOfHeaders = len(taskForWorkerFromMother.CombinationObject.Headers)
+
+	// Read number of Rules
+	numberOfRules = len(taskForWorkerFromMother.CombinationObject.Rules)
+
+	// Calculate number of rows
+	numberOfRows = taskForWorkerFromMother.StartOfBatch + taskForWorkerFromMother.BatchSize
+
+	//Set start time to current time
+	workerObject.startTime = time.Now()
+	calculationCounter = 0
+
+	// Loop through all rows that was given to worken
+	for row = taskForWorkerFromMother.StartOfBatch; row < numberOfRows; row++ {
+		// Calculate time before finished
+		if row < iterationsBetweenAverageTimeCalculationMax {
+			if row == calculationCounter*iterationsBetweenAverageTimeCalculationMin {
+				calculationCounter = calculationCounter + 1
+				duration := time.Since(workerObject.startTime)
+				workerObject.timeBeforeFinish = int32((float64(duration.Seconds())) * float64((numberOfRows-row)/iterationsBetweenAverageTimeCalculationMin))
+				workerObject.logger.WithFields(logrus.Fields{
+					"workerObject.timeBeforeFinish": workerObject.timeBeforeFinish,
+				}).Info("Number of seconds left befor finished")
+			}
+
+		} else {
+			if row == calculationCounter*iterationsBetweenAverageTimeCalculationMax {
+				calculationCounter = calculationCounter + 1
+				duration := time.Since(workerObject.startTime)
+				workerObject.timeBeforeFinish = int32((float64(duration.Seconds())) * float64((numberOfRows-row)/iterationsBetweenAverageTimeCalculationMax))
+				workerObject.logger.WithFields(logrus.Fields{
+					"workerObject.timeBeforeFinish": workerObject.timeBeforeFinish,
+				}).Info("Number of seconds left befor finished")
+			}
+
+		}
+
+		// Loop through all Headers and create current rows combination
+		for header = 0; header < numberOfHeaders; header++ {
+			numberOfHeaderValue = float64(taskForWorkerFromMother.CombinationObject.Headers[header].HeaderValueCount)
+			headerMultiplicationFactor = taskForWorkerFromMother.CombinationObject.Headers[header].MultiplicatorFactor
+			currentRowValues[header] = inputValueIndexForRule(math.Mod(float64(int64(int64(row)/headerMultiplicationFactor)), numberOfHeaderValue))
+			//=MOD(ROUNDDOWN($A10/B$2,0),B$3)
+		}
+
+		// Loop through all Rules and exchange value for True or False and then evaluate ruleIndex
+		for ruleIndex = 0; ruleIndex < numberOfRules; ruleIndex++ {
+			executableRule = ""
+
+			currentRule = taskForWorkerFromMother.CombinationObject.Rules[ruleIndex]
+			numberOfRuleBlocks = len(currentRule.RuleBaseBlocks)
+			// Loop throught all rule blocks build the specific rule and do the exchange to True/False
+			for ruleBlockIndex = 0; ruleBlockIndex < numberOfRuleBlocks; ruleBlockIndex++ {
+				ruleBlock = currentRule.RuleBaseBlocks[ruleBlockIndex]
+				switch ruleBlock.BuildingBlockType {
+
+				// Standeard Header values type should be changed into True or False
+				case 0:
+					blockValue = currentRule.RuleBaseBlocks[ruleBlockIndex].BuildingBlockValue
+					valueId = currentRule.RuleBaseBlocks[ruleBlockIndex].ValueId
+					referencedHeaderIndex = currentRule.RuleBaseBlocks[ruleBlockIndex].HeaderIndexIfappropiant
+
+					// Check if found valueId exists in current row combination
+					if valueId == int32(currentRowValues[referencedHeaderIndex]) {
+						blockOperator = "True"
+					} else {
+						blockOperator = "False"
+					}
+
+					// Everything else should just be copied as is
+				default:
+					blockOperator = blockValue
+
+				}
+				executableRule = blockOperator + blockOperator
+			}
+
+			// Evaluate Rule
+			expression, err := govaluate.NewEvaluableExpression(executableRule);
+			if err != nil {
+				fmt.Println(err)
+			}
+
+			result, err := expression.Evaluate(nil);
+			if err != nil {
+				fmt.Println("Couldn't create expression for evalution", err)
+			}
+			n, ok := result.(bool)
+			if ok != true {
+				fmt.Println("result is not a boolean")
+			} else {
+
+				// Add to return set
+				rowResults = append(rowResults, &mother_server_grpc_api.RowResult{row, n})
+			}
+		}
+
+	}
+
+	return rowResults, nil
+}
+
+func (workerObject *WorkerObject_struct) ExecuteTaskFromMother(taskForWorkerFromMother *worker_server_grpc_api.MessageToWorkerStruct) () {
+
+	var err error
+	finishedworkToSendToMotherServer, err := workerObject.workerEngine(taskForWorkerFromMother)
+	if err != nil {
+		workerObject.logger.WithFields(logrus.Fields{
+			"err": err,
+		}).Error("Error when execution task from Mother")
+	} else {
+		ctx := context.Background()
+		workToSendToMotherServer := &mother_server_grpc_api.WorkerResult{
+			taskForWorkerFromMother.StartOfBatch,
+			taskForWorkerFromMother.BatchSize,
+			finishedworkToSendToMotherServer,
+			workerObject.uuid,
+		workerObject.currentTaskuuid}
+		response, err := motherClient.SendWorkerResult(ctx, workToSendToMotherServer)
+		if err != nil {
+			if err != nil {
+				workerObject.logger.WithFields(logrus.Fields{
+					"err":      err,
+					"response": response,
+				}).Error("Error when sending result back to Mother")
+			}
+
+		}
+
+	}
+}

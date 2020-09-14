@@ -37,8 +37,7 @@ Q_OBJECT
 public:
 	BridgeTemplatece8f65(QObject *parent = Q_NULLPTR) : QObject(parent) {qRegisterMetaType<quintptr>("quintptr");BridgeTemplatece8f65_BridgeTemplatece8f65_QRegisterMetaType();BridgeTemplatece8f65_BridgeTemplatece8f65_QRegisterMetaTypes();callbackBridgeTemplatece8f65_Constructor(this);};
 	void Signal_Clicked() { callbackBridgeTemplatece8f65_Clicked(this); };
-	void Signal_SendVariantListMap(QVariant v0, QList<QVariant> v1, type424d06 v2, QVariant v3) { callbackBridgeTemplatece8f65_SendVariantListMap(this, new QVariant(v0), ({ QList<QVariant>* tmpValue5a6df7 = new QList<QVariant>(v1); Moc_PackedList { tmpValue5a6df7, tmpValue5a6df7->size() }; }), ({ QMap<QString, QVariant>* tmpValuea1047e = new QMap<QString, QVariant>(v2); Moc_PackedList { tmpValuea1047e, tmpValuea1047e->size() }; }), new QVariant(v3)); };
-	void Signal_SendVariantListMap2(QObject* *core.) { callbackBridgeTemplatece8f65_SendVariantListMap2(this, *core.); };
+	void Signal_SendVariantListMap(QVariant v0, QList<QVariant> v1, type424d06 v2) { callbackBridgeTemplatece8f65_SendVariantListMap(this, new QVariant(v0), ({ QList<QVariant>* tmpValue5a6df7 = new QList<QVariant>(v1); Moc_PackedList { tmpValue5a6df7, tmpValue5a6df7->size() }; }), ({ QMap<QString, QVariant>* tmpValuea1047e = new QMap<QString, QVariant>(v2); Moc_PackedList { tmpValuea1047e, tmpValuea1047e->size() }; })); };
 	 ~BridgeTemplatece8f65() { callbackBridgeTemplatece8f65_DestroyBridgeTemplate(this); };
 	void childEvent(QChildEvent * event) { callbackBridgeTemplatece8f65_ChildEvent(this, event); };
 	void connectNotify(const QMetaMethod & sign) { callbackBridgeTemplatece8f65_ConnectNotify(this, const_cast<QMetaMethod*>(&sign)); };
@@ -52,8 +51,7 @@ public:
 	void timerEvent(QTimerEvent * event) { callbackBridgeTemplatece8f65_TimerEvent(this, event); };
 signals:
 	void clicked();
-	void sendVariantListMap(QVariant v0, QList<QVariant> v1, type424d06 v2, QVariant v3);
-	void sendVariantListMap2(QObject* *core.);
+	void sendVariantListMap(QVariant v0, QList<QVariant> v1, type424d06 v2);
 public slots:
 private:
 };
@@ -118,32 +116,17 @@ void BridgeTemplatece8f65_Clicked(void* ptr)
 
 void BridgeTemplatece8f65_ConnectSendVariantListMap(void* ptr, long long t)
 {
-	QObject::connect(static_cast<BridgeTemplatece8f65*>(ptr), static_cast<void (BridgeTemplatece8f65::*)(QVariant, QList<QVariant>, QMap<QString, QVariant>, QVariant)>(&BridgeTemplatece8f65::sendVariantListMap), static_cast<BridgeTemplatece8f65*>(ptr), static_cast<void (BridgeTemplatece8f65::*)(QVariant, QList<QVariant>, QMap<QString, QVariant>, QVariant)>(&BridgeTemplatece8f65::Signal_SendVariantListMap), static_cast<Qt::ConnectionType>(t));
+	QObject::connect(static_cast<BridgeTemplatece8f65*>(ptr), static_cast<void (BridgeTemplatece8f65::*)(QVariant, QList<QVariant>, QMap<QString, QVariant>)>(&BridgeTemplatece8f65::sendVariantListMap), static_cast<BridgeTemplatece8f65*>(ptr), static_cast<void (BridgeTemplatece8f65::*)(QVariant, QList<QVariant>, QMap<QString, QVariant>)>(&BridgeTemplatece8f65::Signal_SendVariantListMap), static_cast<Qt::ConnectionType>(t));
 }
 
 void BridgeTemplatece8f65_DisconnectSendVariantListMap(void* ptr)
 {
-	QObject::disconnect(static_cast<BridgeTemplatece8f65*>(ptr), static_cast<void (BridgeTemplatece8f65::*)(QVariant, QList<QVariant>, QMap<QString, QVariant>, QVariant)>(&BridgeTemplatece8f65::sendVariantListMap), static_cast<BridgeTemplatece8f65*>(ptr), static_cast<void (BridgeTemplatece8f65::*)(QVariant, QList<QVariant>, QMap<QString, QVariant>, QVariant)>(&BridgeTemplatece8f65::Signal_SendVariantListMap));
+	QObject::disconnect(static_cast<BridgeTemplatece8f65*>(ptr), static_cast<void (BridgeTemplatece8f65::*)(QVariant, QList<QVariant>, QMap<QString, QVariant>)>(&BridgeTemplatece8f65::sendVariantListMap), static_cast<BridgeTemplatece8f65*>(ptr), static_cast<void (BridgeTemplatece8f65::*)(QVariant, QList<QVariant>, QMap<QString, QVariant>)>(&BridgeTemplatece8f65::Signal_SendVariantListMap));
 }
 
-void BridgeTemplatece8f65_SendVariantListMap(void* ptr, void* v0, void* v1, void* v2, void* v3)
+void BridgeTemplatece8f65_SendVariantListMap(void* ptr, void* v0, void* v1, void* v2)
 {
-	static_cast<BridgeTemplatece8f65*>(ptr)->sendVariantListMap(*static_cast<QVariant*>(v0), ({ QList<QVariant>* tmpP = static_cast<QList<QVariant>*>(v1); QList<QVariant> tmpV = *tmpP; tmpP->~QList(); free(tmpP); tmpV; }), ({ QMap<QString, QVariant>* tmpP = static_cast<QMap<QString, QVariant>*>(v2); QMap<QString, QVariant> tmpV = *tmpP; tmpP->~QMap(); free(tmpP); tmpV; }), *static_cast<QVariant*>(v3));
-}
-
-void BridgeTemplatece8f65_ConnectSendVariantListMap2(void* ptr, long long t)
-{
-	QObject::connect(static_cast<BridgeTemplatece8f65*>(ptr), static_cast<void (BridgeTemplatece8f65::*)(QObject*)>(&BridgeTemplatece8f65::sendVariantListMap2), static_cast<BridgeTemplatece8f65*>(ptr), static_cast<void (BridgeTemplatece8f65::*)(QObject*)>(&BridgeTemplatece8f65::Signal_SendVariantListMap2), static_cast<Qt::ConnectionType>(t));
-}
-
-void BridgeTemplatece8f65_DisconnectSendVariantListMap2(void* ptr)
-{
-	QObject::disconnect(static_cast<BridgeTemplatece8f65*>(ptr), static_cast<void (BridgeTemplatece8f65::*)(QObject*)>(&BridgeTemplatece8f65::sendVariantListMap2), static_cast<BridgeTemplatece8f65*>(ptr), static_cast<void (BridgeTemplatece8f65::*)(QObject*)>(&BridgeTemplatece8f65::Signal_SendVariantListMap2));
-}
-
-void BridgeTemplatece8f65_SendVariantListMap2(void* ptr, void* *core.)
-{
-	static_cast<BridgeTemplatece8f65*>(ptr)->sendVariantListMap2(static_cast<QObject*>(*core.));
+	static_cast<BridgeTemplatece8f65*>(ptr)->sendVariantListMap(*static_cast<QVariant*>(v0), ({ QList<QVariant>* tmpP = static_cast<QList<QVariant>*>(v1); QList<QVariant> tmpV = *tmpP; tmpP->~QList(); free(tmpP); tmpV; }), ({ QMap<QString, QVariant>* tmpP = static_cast<QMap<QString, QVariant>*>(v2); QMap<QString, QVariant> tmpV = *tmpP; tmpP->~QMap(); free(tmpP); tmpV; }));
 }
 
 int BridgeTemplatece8f65_BridgeTemplatece8f65_QRegisterMetaType()
@@ -169,6 +152,15 @@ int BridgeTemplatece8f65_BridgeTemplatece8f65_QmlRegisterType2(char* uri, int ve
 {
 #ifdef QT_QML_LIB
 	return qmlRegisterType<BridgeTemplatece8f65>(const_cast<const char*>(uri), versionMajor, versionMinor, const_cast<const char*>(qmlName));
+#else
+	return 0;
+#endif
+}
+
+int BridgeTemplatece8f65_BridgeTemplatece8f65_QmlRegisterUncreatableType(char* uri, int versionMajor, int versionMinor, char* qmlName, struct Moc_PackedString message)
+{
+#ifdef QT_QML_LIB
+	return qmlRegisterUncreatableType<BridgeTemplatece8f65>(const_cast<const char*>(uri), versionMajor, versionMinor, const_cast<const char*>(qmlName), QString::fromUtf8(message.data, message.len));
 #else
 	return 0;
 #endif
@@ -427,6 +419,15 @@ int CustomLabelce8f65_CustomLabelce8f65_QmlRegisterType2(char* uri, int versionM
 {
 #ifdef QT_QML_LIB
 	return qmlRegisterType<CustomLabelce8f65>(const_cast<const char*>(uri), versionMajor, versionMinor, const_cast<const char*>(qmlName));
+#else
+	return 0;
+#endif
+}
+
+int CustomLabelce8f65_CustomLabelce8f65_QmlRegisterUncreatableType(char* uri, int versionMajor, int versionMinor, char* qmlName, struct Moc_PackedString message)
+{
+#ifdef QT_QML_LIB
+	return qmlRegisterUncreatableType<CustomLabelce8f65>(const_cast<const char*>(uri), versionMajor, versionMinor, const_cast<const char*>(qmlName), QString::fromUtf8(message.data, message.len));
 #else
 	return 0;
 #endif

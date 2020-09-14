@@ -1,0 +1,35 @@
+syntax = "proto3";
+package mother_server_grpc_api;
+
+//~/Programs/protoc-3.10.1-linux-x86_64/bin/protoc  -I mother_server_grpc_api --go_out=plugins=grpc:mother_server_grpc_api mother_server_grpc_api/mother_server.proto
+
+// Parameter used for Empty inputs
+//message EmptyParameter {
+//}
+
+// Ack/Nack- Response message with comment
+message AckNackResponse {
+    bool acknack = 1; // True=Ack, False=Nack
+    string comments = 2; //Comments if needed
+}
+
+// The Client register service definition.
+// ***********************
+service MotherServer {
+
+    //Main coordinator sends task to worker with this service
+    rpc WorkerIPandPortIs (WorkerInformation) returns (AckNackResponse) {
+    }
+
+
+
+}
+
+
+message WorkerInformation {
+    string worker_ip = 1;
+    string worker_port = 2;
+    string worker_uuid = 3;
+    string worker_task_uuid = 4;
+}
+

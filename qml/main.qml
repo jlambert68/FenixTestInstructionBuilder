@@ -8,10 +8,6 @@ Item {
 
 	property BridgeTemplate template: BridgeTemplate{}
 
-	//property bool myVariable: true
-	property variant myVariabel1:true
-	property variant myVariabel2: {"AA": true, "BB": 3.14, "CC": "Hej", "DD": {"DAA": false, "DBB": 3.1414, "DCC": "Hej då!"}}
-
 	width: 250
 	height: 200
 
@@ -56,18 +52,9 @@ Item {
 			text: "sendVariantListMap"
 			onClicked: {
 				text = "look into the console"
-				root.template.sendVariantListMap(true, [1.23, "hello"],  {"A": true, "B": 2.23, "C": "hello", "D": root, "E": [root, root]}, root.myVariabel1)
+				root.template.sendVariantListMap(true, [1.23, "hello"],  {"json": {"A": true, "B": 2.23, "C": "hello", "D": {"DA": 3.14, "DB": "Pi", "DC": {"DCA": 1.73, "DCB": "Roten ur 2"}}}})
 			}
 		}
-			Button {
-    			Layout.fillWidth: true
-
-    			text: "sendmyVariabel2"
-    			onClicked: {
-    				text = "look into the console"
-    				root.template.sendVariantListMap2(root.myVariabel2)
-    			}
-    		}
 	}
 }
 
