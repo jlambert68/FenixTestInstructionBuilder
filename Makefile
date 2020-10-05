@@ -14,6 +14,9 @@ buildAndRun:
 	qtdeploy build desktop
 	./deploy/linux/FenixTestInstructionBuilder
 
+installStep0:
+	go mod init
+
 installStep1:
 	go mod download && go get -u -v github.com/therecipe/qt/cmd/qtsetup && go get -u -v github.com/therecipe/qt/cmd/...
 
