@@ -1,194 +1,91 @@
-import QtQuick 2.10				//Item
-import QtQuick.Controls 2.3		//Button
-import QtQuick.Layouts 1.3		//ColumnLayout
-import CustomQmlTypes 1.0		//CustomLabel and BridgeTemplate
+/****************************************************************************
+**
+**
+**
+**
+
+**
+****************************************************************************/
+
+//Slightly edited the original code for a scrollable TextArea and Qt Quick 2 controls
 
 import QtQuick 2.2
 import QtQuick.Controls 2.0
 import QtQuick.Controls 1.2
-
+import QtQuick.Layouts 1.3
 import QtQuick.Dialogs 1.0
 import QtQml.Models 2.2
 import CustomQmlTypes 1.0		//CustomLabel and BridgeTemplate
+//import io.qt.BackEnd 1.0
+//import Backend 1.0
 
 
 
 
-Item {
-	id: root
+/**
+ApplicationWindow {
+    visible: true
+    title: "Basic layouts"
+    property int margin: 11
+    minimumWidth: 600
+    minimumHeight: 450
+**/
 
-	property BridgeTemplate template: BridgeTemplate{}
-
-	width: 250
-	height: 200
-
+//Item {
+//    id: root
+    //property BridgeTemplate template: BridgeTemplate{}
+//    	width: 250
+//    	height: 200
 
     ColumnLayout {
         id: mainLayout
+
+        //property BridgeTemplate template: BridgeTemplate{}
+//        anchors.fill: parent
+//        anchors.margins: margin
+        spacing: 2
+/*
+        Rectangle {
+            color: "white"
+
+            BackEnd {
+                id: backEnd
+                onTimeChanged: (time) => txt.text = time
+            }
+
+            Text {
+                id: txt
+                anchors.fill: parent
+                font.pixelSize: 32
+                font.weight: Font.Bold
+                verticalAlignment: Text.AlignVCenter
+                horizontalAlignment: Text.AlignHCenter
+            }
+        }
+*/
+
         RowLayout {
             id: layout
-
+  //          anchors.fill: parent
             spacing: 6
             Layout.alignment : Qt.AlignTop
 
- /*Loader {
-       sourceComponent : myExtraComponents
-       }
-*/
-
-            	ColumnLayout {
-            	    id: myExtraComponents
-            		anchors.fill: parent
-
-            		Label {
-            			property CustomLabel label: CustomLabel{}
-            			Layout.alignment: Qt.AlignCenter
-
-            			text: label.text
-            		}
-
-            		Label {
-            			property CustomLabel label: CustomLabel{}
-            			Layout.alignment: Qt.AlignCenter
-
-            			text: label.text
-            		}
-
-            		Label {
-            			property CustomLabel label: CustomLabel{}
-            			Layout.alignment: Qt.AlignCenter
-
-            			text: label.text
-            		}
-
-            		Button {
-            			Layout.fillWidth: true
-            			Layout.alignment: Qt.AlignBottom
-
-            			text: "start!"
-
-            			onClicked: {
-            				enabled : false
-            				root.template.clicked()
-            			}
-            		}
-            		Button {
-            			Layout.fillWidth: true
-            			property var globalForJs: 10
-
-            			text: "sendVariantListMap"
-            			onClicked: {
-            				text = "look into the console"
-            				root.template.sendVariantListMap(true, [1.23, "hello"],  {"json": {"A": true, "B": 2.23, "C": "hello", "D": {"DA": 3.14, "DB": "Pi", "DC": {"DCA": 1.73, "DCB": "Roten ur 2"}}}})
-            			    root.template.sendglobalForJs(globalForJs)
-
-                            var JsonString = '{"a":"A whatever, run","b":"B fore something happens"}';
-                            console.log(JsonString);
-                            var JsonObject= JSON.parse(JsonString);
-                            JsonObject.a = "Sidan 77?";
-                            JsonObject.b = "Detta är en banan!"
-
-                            var JsonString2 = JSON.stringify(JsonObject);
-
-                            root.template.sendJsonObject(JsonString2)
-
-
-                            //retrieve values from JSON again
-                            var aString = JsonObject.a;
-                            var bString = JsonObject.b;
-
-                            console.log(aString);
-                            console.log(bString);
-                            console.log(JsonString2);
-
-                            var myJsonStruct = {"Name": "Jonas", "Age": 51};
-                            console.log(myJsonStruct);
-
-                            var sammy = {
-                              "first_name"  :  "Sammy",
-                              "last_name"   :  "Shark",
-                              "online"      :  true
-                            };
-
-                            console.log(sammy);
-                            var sammyStr = JSON.stringify(sammy);
-                            root.template.sendJsonObject(sammyStr)
-
-                            var guiData = {
-                                            "metadata": {
-                                              "isSaved": false,
-                                              "isEditedByUser": false ,
-                                              "isChangedByDB": false,
-                                              "lastSaved": "0"
-                                            },
-                                            "pluginGuidTextField":
-                                              {
-                                                "dataWhenLoadedOrSaved": "0",
-                                                "dataAfterEdit": "0"
-                                              },
-                                              "pluginNameCombobox":
-                                              {
-                                                "dataWhenLoadedOrSaved": "0",
-                                                "dataAfterEdit": "0"
-                                              }
-                                              };
-
-                            console.log(guiData);
-                            var guiDataStr = JSON.stringify(guiData);
-                            root.template.sendJsonObject(guiDataStr)
-
-                            function removeAllItemsInListModels(myListModel)
-                            {
-                                for (var i=0; i<myListModel.count; -i)
-                                {
-                                    if (fruitModel.get(i).selected){
-                                        fruitModel.remove(i);
-                                        i=0; //read from the start! Because index has changed after removing
-                                    }
-                                }
-                            }
-
-            			}
-            		}
-            	}
- //   QmlToBeImported{}
-
-
             // ************ Test Instruction ************
-
             ColumnLayout {
-
+                id: testInstructionLayout
+        //       anchors.fill: parent
+        //       anchors.margins: margin
                  spacing: 2
                  Layout.minimumWidth : 250
-                 Layout.alignment : Qt.AlignTop
-
+                 //Layout.alignment : Qt.AlignTop
 
                  GroupBox {
                     id: rowBoxTestInstruction
                     title: "Test Instructions"
                     Layout.fillWidth: true
-                    Layout.fillHeight: true
 
 
-                //Column {
-                //    id: column0
-                //    width: parent.width
-                    //heigt: parent.width
 
-            ScrollView {
-                anchors.fill: parent
-
-                width: parent.width
-                height : columnTestInstruction.height //parent.height
-                //contentWidth: column.width    // The important part
-                // contentHeight: column.height  // Same
-                //clip : true                   // Prevent drawing column outside the scrollview borders
-
-                Column {
-                    id: columnTestInstruction
-                    width: parent.width
-
-                    // Your items here
 
                     ColumnLayout {
                         id: rowBoxTestInstructionLayout
@@ -224,10 +121,9 @@ Item {
                                         ToolTip.visible: hovered
                                         ToolTip.text: qsTr("Used as unique id for the plugin.")
 
-
-
                                     }
                                 }
+
                                 // -- pluginName --
                                 ColumnLayout {
                                     id: pluginNameLayput
@@ -259,19 +155,9 @@ Item {
                                             pluginGuidTextField.text = pluginNameItems.get(currentIndex).color
                                             //console.log(systemDomainNameTextField.text)
 
-                                            // Update JSON model
-                                            guiData.pluginNameCombobox.dataAfterDeit = pluginNameItems.get(currentIndex).text
-                                            // Update JSOn model with indirect changes
-                                            guiData.pluginGuidTextField.dataAfterEdit = pluginGuidTextField.text
-
-                                            console.log(guiData);
-                                            var guiDataStr = JSON.stringify(guiData);
-                                            root.template.sendJsonObject(sammyguiDataStrStr)
-
                                         }
                                     }
                                 }
-
                             }
                         }
 
@@ -301,8 +187,6 @@ Item {
                                         ToolTip.timeout: 5000
                                         ToolTip.visible: hovered
                                         ToolTip.text: qsTr("The Domain/system's Id where the Sender operates.")
-
-
 
                                         }
                                 }
@@ -409,7 +293,6 @@ Item {
                             }
                         }
 
-
                         // -- Test Instruction --
                        GroupBox {
                             id: testInstructionGroupBox
@@ -438,7 +321,6 @@ Item {
                                         ToolTip.visible: hovered
                                         ToolTip.text: qsTr("The unique guid for the TestInstruction.")
 
-
                                         }
 
 
@@ -461,16 +343,9 @@ Item {
                                         ToolTip.visible: hovered
                                         ToolTip.text: qsTr("The name of the TestInstruction.")
 
-
-
-                                        onEditingFinished: {
-                                            console.log("Denna är ändrad")
-
-                                        }
                                         }
                                 }
                             }
-                        }
                         }
                         // -- testInstructionDescription
                         ColumnLayout {
@@ -675,9 +550,23 @@ Item {
                     }
                  }
 
-
-}
             }
+/*
+            ColorDialog: {
+             id: testInstructionColorColorDialog
+             title: "Please choose a color"
+             onAccepted: {
+
+                 console.log("You chose: " + testInstructionColorColorDialog.color)
+                 //Qt.quit()
+             }
+             onRejected: {
+                 console.log("Canceled")
+                 //Qt.quit()
+             }
+             Component.onCompleted,: { visible = true}
+              }
+  */
 
             // ************ Test Instructions Details ************
             ColumnLayout {
@@ -692,22 +581,6 @@ Item {
                      id: rowBoxTestInstructionDetails
                      title: "Test Instructions Details"
                      Layout.fillWidth: true
-                     Layout.fillHeight: true
-
-            ScrollView {
-                anchors.fill: parent
-
-                width: parent.width
-                height : columnTestInstructionSDetails.height //parent.height
-                //contentWidth: column.width    // The important part
-                // contentHeight: column.height  // Same
-                clip : true                   // Prevent drawing column outside the scrollview borders
-
-                Column {
-                    id: columnTestInstructionSDetails
-                    width: parent.width
-
-                    // Your items here
 
                      ColumnLayout {
                          id: rowBoxTestInstructioDetailsnLayout
@@ -950,9 +823,6 @@ Rectangle {
 
                  }
             }
-            }
-            }
-
 
             // ************ Test Instructions Attribute Type Details ************
              ColumnLayout {
@@ -968,7 +838,6 @@ Rectangle {
                     id: rowBoxTestInstructionsAttributeTypeDetailsTextBox
                     title: "Test Instructions Attribute Type Details - TextBox"
                     Layout.fillWidth: true
-                    Layout.fillHeight: true
 
                     // Layout holding all object inside groupbox
                     ColumnLayout {
@@ -1161,7 +1030,6 @@ Rectangle {
                     id: rowBoxTestInstructionsAttributeTypeDetailsComboBox
                     title: "Test Instructions Attribute Type Details - ComboBox"
                     Layout.fillWidth: true
-                    Layout.fillHeight: true
 
                     // Layout holding all object inside groupbox
                     ColumnLayout {
@@ -1343,26 +1211,26 @@ Rectangle {
 
                                 }
                             }
-
+                            
                             // -- ComboBoxAttributeValue --
                             ColumnLayout {
                                 id: comboBoxAttributeValueLayout
                                 //spacing: 2
-
+    
                                 Label {
                                     text: "ComboBox Attribute Value"
                                 }
                                 TextField {
                                     id: comboBoxAttributeValueTextField
                                     placeholderText: "Preset value"
-
+    
                                     enabled: true
-
+    
                                     ToolTip.delay: 1000
                                     ToolTip.timeout: 5000
                                     ToolTip.visible: hovered
                                     ToolTip.text: qsTr("The value for the the ComboBox, used for preset values.")
-
+    
                                     }
                                 }
 
@@ -1370,17 +1238,144 @@ Rectangle {
                     }
 
                 }
+             }
+        }
+
+    //}
 
 
+/*
+        // <!-- ************ Test Instruction ************ -->
+        GroupBox {
+            id: rowBox
+            title: "Test Instruction"
+            Layout.fillWidthRowLayout {
+    id: layout
+    anchors.fill: ComboBoxparent
+    spacing: 6: true
 
+            RowLayout {
+                id: rowLayout
+                anchors.fill: parent
 
+                Label { text: "Line 1" }
+                TextField {
+                    placeholderText: "This wants to grow horizontally JOnas"
+                    Layout.fillWidth: true
+                }
+            }
 
+            RowLayout {
+                id: rowLayout2
+                //anchors.fill: parent
 
-
+                Label { text: "Line 2" }
+                TextField {
+                    placeholderText: "This wants to grow horizontally JOnas"
+                    Layout.fillWidth: true
+                }
+            }
 
         }
-    }
+
+        // <!-- ************ Test Instructions Details ************ -->
+        GroupBox {
+                    id: rowBox2
+                    title: "Test Instructions Details"
+                    Layout.fillWidth: true
+        }
+
+
 }
+/*
+        GroupBox {
+            id: rowBox
+            title: "Row layout"
+            Layout.fillWidth: true
 
+            RowLayout {
+                id: rowLayout
+                anchors.fill: parent
+                TextField {
+                    placeholderText: "This wants to grow horizontally JOnas"
+                    Layout.fillWidth: true
+                }
+                Button {
+                    text: "Button"
+                }
+            }
+        }
 
+        GroupBox {
+          id: gridBox
+          title: "Grid layout"
+          Layout.fillWidth: true
 
+          GridLayout {
+              id: gridLayout
+              rows: 3
+              flow: GridLayout.TopToBottom
+              anchors.fill: parent
+
+              Label { text: "Line 1" }
+              Label { text: "Line 2" }
+              Label { text: "Line 3" }
+
+              TextField { }
+              TextField { id: textField }
+              TextField { }
+
+              Flickable {
+                  anchors {
+                      top: parent.top
+                      left: textField.right
+                      right: parent.right
+                      bottom: parent.bottom
+                  }
+
+                  contentHeight: textid.width
+                  contentWidth: textid.height
+
+                  TextArea.flickable: TextArea {
+                    id: textid
+                    text: "This widget spans over three rows in the GridLayout.\n"
+                        + "All items in the GridLayout are implicitly positioned from top to bottom."
+                    wrapMode: TextArea.Wrap
+                  }
+
+                  ScrollBar.vertical: ScrollBar { }
+              }
+          }
+        }
+        TextArea {
+            id: t3
+            text: "This fills the whole cell"
+            Layout.minimumHeight: 30
+            Layout.fillHeight: true
+            Layout.fillWidth: true
+        }
+        GroupBox {
+            id: stackBox
+            title: "Stack layout"
+            implicitWidth: 200
+            implicitHeight: 60
+            Layout.fillWidth: true
+            Layout.fillHeight: true
+            StackLayout {
+                id: stackLayout
+                anchors.fill: parent
+
+                function advance() { currentIndex = (currentIndex + 1) % count }
+
+                Repeater {
+                    id: stackRepeater
+                    model: 5
+                    Rectangle {
+                        color: Qt.hsla((0.5 + index)/stackRepeater.count, 0.3, 0.7, 1)
+                        Button { anchors.centerIn: parent; text: "Page " + (index + 1); onClicked: { stackLayout.advance() } }
+                    }
+                }
+            }
+        }
+    }
+*/

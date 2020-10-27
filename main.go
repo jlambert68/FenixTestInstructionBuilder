@@ -34,6 +34,13 @@ type CustomLabel struct {
 	_ string `property:"text"`
 }
 
+type QmlBridge struct {
+	core.QObject
+
+	_ func(data string)        `signal:"sendToQml"`
+	_ func(data string) string `slot:"sendToGo"`
+}
+
 func (l *CustomLabel) init() {
 	CustomLabels = append(CustomLabels, l)
 }
@@ -613,7 +620,7 @@ func main() {
 	}()
 	// ******************************************************
 
-	var path = filepath.Join(os.Getenv("GOPATH"), "src", "jlambert", "FenixInception3", "FenixTestInstructionBuilder", "qml", "main.qml")
+	var path = filepath.Join(os.Getenv("GOPATH"), "src", "jlambert", "FenixInception3", "FenixTestInstructionBuilder", "qml", "qtProject", "FenixTestInstructionBuilder", "main.qml")
 	println(path)
 	core.QCoreApplication_SetAttribute(core.Qt__AA_EnableHighDpiScaling, true)
 
@@ -621,6 +628,11 @@ func main() {
 
 	//view := quick.NewQQuickView(nil)
 	var view = initQQuickView(path)
+	var qmlBridge = NewQmlBridge(nil)
+	qmlBridge.ConnectSendToGo(func(data string) string {
+		fmt.Println("go:", data)
+		return "hello from go"
+	})
 	view.SetSource(core.NewQUrl3(path, 0))
 
 	view.SetTitle("goroutine Example")

@@ -6,13 +6,11 @@ github.com/golang/protobuf/ptypes/duration
 github.com/golang/protobuf/ptypes/timestamp
 # github.com/google/uuid v1.1.2
 github.com/google/uuid
-# github.com/gopherjs/gopherjs v0.0.0-20190411002643-bd77b112433e
+# github.com/gopherjs/gopherjs v0.0.0-20200217142428-fce0ec30dd00
 github.com/gopherjs/gopherjs/js
-# github.com/konsorten/go-windows-terminal-sequences v1.0.2
-github.com/konsorten/go-windows-terminal-sequences
-# github.com/sirupsen/logrus v1.4.1
+# github.com/sirupsen/logrus v1.7.0
 github.com/sirupsen/logrus
-# github.com/therecipe/qt v0.0.0-20200701200531-7f61353ee73e
+# github.com/therecipe/qt v0.0.0-20200126204426-5074eb6d8c41
 github.com/therecipe/qt
 github.com/therecipe/qt/core
 github.com/therecipe/qt/gui
@@ -21,7 +19,7 @@ github.com/therecipe/qt/network
 github.com/therecipe/qt/qml
 github.com/therecipe/qt/quick
 github.com/therecipe/qt/widgets
-# golang.org/x/net v0.0.0-20190420063019-afa5a82059c6
+# golang.org/x/net v0.0.0-20200822124328-c89045814202
 golang.org/x/net/context
 golang.org/x/net/http/httpguts
 golang.org/x/net/http2
@@ -29,8 +27,10 @@ golang.org/x/net/http2/hpack
 golang.org/x/net/idna
 golang.org/x/net/internal/timeseries
 golang.org/x/net/trace
-# golang.org/x/sys v0.0.0-20190419153524-e8e3143a4f4a
+# golang.org/x/sys v0.0.0-20200928205150-006507a75852
+golang.org/x/sys/internal/unsafeheader
 golang.org/x/sys/unix
+golang.org/x/sys/windows
 # golang.org/x/text v0.3.0
 golang.org/x/text/secure/bidirule
 golang.org/x/text/transform
