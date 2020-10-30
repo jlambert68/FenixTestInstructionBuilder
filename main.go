@@ -14,6 +14,7 @@ import (
 	"strconv"
 	"time"
 
+	"github.com/google/uuid"
 	"github.com/therecipe/qt/core"
 	"github.com/therecipe/qt/quick"
 	"github.com/therecipe/qt/widgets"
@@ -37,8 +38,9 @@ type CustomLabel struct {
 type QmlBridge struct {
 	core.QObject
 
-	_ func(data string)        `signal:"sendToQml"`
+	_ func(data bool)          `signal:"sendToQml"`
 	_ func(data string) string `slot:"sendToGo"`
+	_ func() string            `slot:"generateGuid"`
 }
 
 func (l *CustomLabel) init() {
@@ -511,6 +513,16 @@ func returnKeysValueMap(keyValueParArray []keyValuePar) keyValueMapType {
 }
 
 // *********************************************************************
+func generateGuid() string {
+	var returnGuid string
+	newGuid, _ := uuid.NewUUID()
+
+	returnGuid = newGuid.String()
+
+	return returnGuid
+}
+
+// *********************************************************************
 var CustomLabels []*CustomLabel
 
 func initQQuickView(path string) *quick.QQuickView {
@@ -633,12 +645,18 @@ func main() {
 		fmt.Println("go:", data)
 		return "hello from go"
 	})
+	qmlBridge.ConnectGenerateGuid(generateGuid)
+
+	view.RootContext().SetContextProperty("QmlBridge", qmlBridge)
 	view.SetSource(core.NewQUrl3(path, 0))
 
 	view.SetTitle("goroutine Example")
 	view.SetResizeMode(quick.QQuickView__SizeRootObjectToView)
 	//view.SetSource(core.NewQUrl3("qrc:/qml/main.qml", 0))
 	view.Show()
+
+	//
+	qmlBridge.SendToQml(true)
 
 	app.Exec()
 }

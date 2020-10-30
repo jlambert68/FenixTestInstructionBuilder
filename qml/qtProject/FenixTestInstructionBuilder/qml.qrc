@@ -6,5 +6,6 @@
         <file>OverAllAdmin.qml</file>
         <file>TableStuff.qml</file>
         <file>tab.png</file>
+        <file>jsFunctions.js</file>
     </qresource>
 </RCC>

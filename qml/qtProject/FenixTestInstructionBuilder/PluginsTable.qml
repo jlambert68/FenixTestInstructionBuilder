@@ -5,6 +5,7 @@ import QtQuick.Controls 2.3		//Button
 import QtQuick.Layouts 1.3		//ColumnLayout
 import QtQuick.Dialogs 1.1
 import QtQuick.Controls.Styles 1.4
+import "jsFunctions.js" as JServer
 
 Item {
     id: pluginsTableItem
@@ -38,20 +39,14 @@ Item {
             guid: "2243085a-feee-4ae7-8ccf-03f69c0704a4"
             readyForUse: true
             activated: true
-
-            attributes: [
-                ListElement { description: "Sends UTRs via MQ towards Custody Cash" }
-            ]
+            description: "Sends UTRs via MQ towards Custody Cash"
         }
         ListElement {
             name: "Validate New Pacs008"
             guid: "d456499c-2ad1-4677-8e1d-909a7ecab560"
             readyForUse: false
             activated: false
-
-            attributes: [
-                ListElement { description: "Validates that a newly created Pacs008 has been sent to CMaaS" }
-            ]
+            description: "Validates that a newly created Pacs008 has been sent to CMaaS"
         }
     }
 
@@ -253,9 +248,11 @@ Item {
         }
 
         onAboutToShow: {
+
+
             switch(pluginsTableItem.newOrEditStr ) {
             case "New":
-                popUptestInstructionGuid.text = ""
+                popUptestInstructionGuid.text = JServer.jsGenerateGuid()
                 popUptestInstructionName.text = ""
                 poUpTestInstructionIsReadyForUsedCheckBox.checked = false
                 poUpTestInstructionIsActivatedCheckBox.checked = false
@@ -268,7 +265,7 @@ Item {
                 popUptestInstructionName.text = pluginsModel.get(pluginsTableView.currentRow).name
                 poUpTestInstructionIsReadyForUsedCheckBox.checked = pluginsModel.get(pluginsTableView.currentRow).readyForUse
                 poUpTestInstructionIsActivatedCheckBox.checked = pluginsModel.get(pluginsTableView.currentRow).activated
-                popUptestInstructionDescription.text = pluginsModel.get(pluginsTableView.currentRow).attributes.get(0).description
+                popUptestInstructionDescription.text = pluginsModel.get(pluginsTableView.currentRow).description
 
                 break;
 
@@ -557,7 +554,7 @@ Item {
 
                         } else {
 
-                            // Do the popup process a New object or Edit an existing object
+                            // Did the popup processed a New object or Edit an existing object
                             switch(pluginsTableItem.newOrEditStr ) {
                             case "New":
 
@@ -565,8 +562,9 @@ Item {
                                 pluginsModel.append({name: popUptestInstructionName.text,
                                                         guid: popUptestInstructionGuid.text,
                                                         readyForUse: poUpTestInstructionIsReadyForUsedCheckBox.checked,
-                                                        activated: poUpTestInstructionIsActivatedCheckBox.checked});
-                                pluginsModel.set(pluginsTableView.rowCount-1).attributes.setproperty(0,"description",popUptestInstructionDescription.text)
+                                                        activated: poUpTestInstructionIsActivatedCheckBox.checked,
+                                                        description: popUptestInstructionDescription.text})
+//                                pluginsModel.set(pluginsTableView.rowCount-1).attributes.setproperty(0,"description",popUptestInstructionDescription.text)
 
                                 // Close popUp
                                 popUpTestInstruction.close()

@@ -13,11 +13,20 @@ Window {
     id: rootWindow
 
 
+
+
     MainTable {
         id: rootTable
         anchors.fill: parent
         property int rootWindowWidth: parent.width
         property int rootWindowHeight: parent.height
+        property bool startedByGolang: false
+
+        Connections
+        {
+            target: QmlBridge
+            onSendToQml: rootTable.startedByGolang = data
+        }
 
 
     }

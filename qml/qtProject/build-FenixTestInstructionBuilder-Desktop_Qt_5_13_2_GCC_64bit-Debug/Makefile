@@ -707,6 +707,7 @@ qrc_qml.cpp: ../FenixTestInstructionBuilder/qml.qrc \
 		../FenixTestInstructionBuilder/OverAllAdmin.qml \
 		../FenixTestInstructionBuilder/PluginsTable.qml \
 		../FenixTestInstructionBuilder/TableStuff.qml \
+		../FenixTestInstructionBuilder/jsFunctions.js \
 		../FenixTestInstructionBuilder/main.qml
 	/home/jlambert/Qt/5.13.2/gcc_64/bin/rcc -name qml ../FenixTestInstructionBuilder/qml.qrc -o qrc_qml.cpp
 
