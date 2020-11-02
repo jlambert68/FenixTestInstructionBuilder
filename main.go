@@ -655,7 +655,7 @@ func main() {
 	//view.SetSource(core.NewQUrl3("qrc:/qml/main.qml", 0))
 	view.Show()
 
-	//
+	// Tell QML that it should use Go-server for instead of local mocks for certain functions
 	qmlBridge.SendToQml(true)
 
 	app.Exec()

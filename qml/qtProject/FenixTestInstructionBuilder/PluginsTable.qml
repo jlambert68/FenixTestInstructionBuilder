@@ -30,7 +30,7 @@ Item {
 
 
 
-
+    // Model for current Plugins
     ListModel {
         id: pluginsModel
 
@@ -47,6 +47,27 @@ Item {
             readyForUse: false
             activated: false
             description: "Validates that a newly created Pacs008 has been sent to CMaaS"
+        }
+    }
+
+
+    // Model for current Domains
+    ListModel {
+        id: domainsModel
+
+        ListElement {
+            name: "Custody Cash"
+            guid: "2243085a-feee-4ae7-8ccf-03f69c0704a4"
+            readyForUse: true
+            activated: true
+            description: "All test regarding Custody Cash"
+        }
+        ListElement {
+            name: "Cusotdy Arrangement"
+            guid: "d456499c-2ad1-4677-8e1d-909a7ecab560"
+            readyForUse: false
+            activated: false
+            description: "All tests regarding Custody Arrangement"
         }
     }
 
@@ -68,132 +89,196 @@ Item {
         }
     }
 
+    ColumnLayout {
+        spacing: 12
+        Layout.fillWidth: true
 
 
-    GroupBox {
-        id: pluginGroupBox
-        title: "Supported Plugins"
-        anchors.fill: parent
-
-
-        ColumnLayout {
-            id: mainLayout
-            anchors.fill: parent
-            Layout.fillWidth: true
+        // Table for Plugins
+        GroupBox {
+            id: pluginGroupBox
+            title: "Supported Plugins"
             Layout.alignment: Qt.AlignTop
+            width: pluginsTableItem.width
 
-            TableView {
-                id: pluginsTableView
-                //anchors.fill: parent
-                Layout.fillWidth: parent
+
+            ColumnLayout {
+                id: pluginTableLayout
+                anchors.fill: parent
+                //Layout.fillWidth: true
+                //width: parent.width
                 Layout.alignment: Qt.AlignTop
-                //width: 500
+
+                TableView {
+                    id: pluginsTableView
+                    anchors.fill: parent
+                    //Layout.fillWidth: parent
+                    Layout.alignment: Qt.AlignTop
 
 
-                TableViewColumn {
-                    role: "name"
-                    title: "Name"
-                    width: 100
-                }
 
-                TableViewColumn {
-                    role: "guid"
-                    title: "GUID"
-                    width: 200
-                }
+                    TableViewColumn {
+                        role: "name"
+                        title: "Name"
+                        width: 300
+                    }
 
-                TableViewColumn {
-                    role: "readyForUse"
-                    title: "Ready for use"
-                    width: 50
-                }
+                    TableViewColumn {
+                        role: "guid"
+                        title: "GUID"
+                        width: 250
+                    }
 
-                TableViewColumn {
-                    role: "activated"
-                    title: "Activated"
-                    width: 50
-                }
+                    TableViewColumn {
+                        role: "readyForUse"
+                        title: "Ready for use"
+                        width: 50
+                    }
 
-                model: pluginsModel
+                    TableViewColumn {
+                        role: "activated"
+                        title: "Activated"
+                        width: 50
+                    }
 
-                onActivated: {
-                    console.log("User clicked on row: "+ row)
+                    model: pluginsModel
+
+                    onActivated: {
+                        console.log("User clicked on Plugins-row: "+ row)
+                    }
                 }
             }
-
-
-            // *************** Buttons for New, Edit and Delete
-            RowLayout {
-                id: buttonlayout
-
-                spacing: 6
-                Layout.alignment : Qt.AlignTop
+        }
 
 
 
+        // Table for Domains
+        GroupBox {
+            id: domainGroupBox
+            title: "Supported Dopmains"
+            Layout.alignment: Qt.AlignTop
+            width: pluginsTableItem.width
 
-                // ** New **
-                Button {
-                    Layout.alignment : Qt.AlignLeft
 
-                    text: "New Plugin"
+            ColumnLayout {
+                id: domainTableLayout
+                anchors.fill: parent
+                //Layout.fillWidth: true
+                //width: parent.width
+                Layout.alignment: Qt.AlignTop
 
-                    onClicked: {
-                        console.log("Creare New Plugin")
-                        newOrEditStr = "New"
+                TableView {
+                    id: domainTableView
+                    anchors.fill: parent
+                    //Layout.fillWidth: parent
+                    Layout.alignment: Qt.AlignTop
+
+
+
+                    TableViewColumn {
+                        role: "name"
+                        title: "Name"
+                        width: 300
+                    }
+
+                    TableViewColumn {
+                        role: "guid"
+                        title: "GUID"
+                        width: 250
+                    }
+
+                    TableViewColumn {
+                        role: "readyForUse"
+                        title: "Ready for use"
+                        width: 50
+                    }
+
+                    TableViewColumn {
+                        role: "activated"
+                        title: "Activated"
+                        width: 50
+                    }
+
+                    model: domainsModel
+
+                    onActivated: {
+                        console.log("User clicked on Domain-row: "+ row)
+                    }
+                }
+            }
+        }
+
+        // *************** Buttons for New, Edit and Delete
+        RowLayout {
+            id: buttonlayout
+
+            spacing: 6
+            Layout.alignment : Qt.AlignTop
+
+
+
+
+            // ** New **
+            Button {
+                Layout.alignment : Qt.AlignLeft
+
+                text: "New Plugin"
+
+                onClicked: {
+                    console.log("Creare New Plugin")
+                    newOrEditStr = "New"
+                    newOrEditIsProcessedBool = false
+                    popUpTestInstruction.open()
+
+
+                }
+            }
+            // ** Edit **
+            Button {
+                Layout.alignment : Qt.AlignLeft
+
+                text: "Edit Plugin"
+
+                onClicked: {
+                    // check that a row is selected before executing command
+                    if (pluginsTableView.currentRow === -1) {
+                        myMessageDialog.visible = true
+
+                    } else {
+                        console.log("Edit Plugin on row: "+ pluginsTableView.currentRow)
+                        //enabled : false
+                        //root.template.clicked()
+                        newOrEditStr = "Edit"
                         newOrEditIsProcessedBool = false
                         popUpTestInstruction.open()
 
-
-                    }
-                }
-                // ** Edit **
-                Button {
-                    Layout.alignment : Qt.AlignLeft
-
-                    text: "Edit Plugin"
-
-                    onClicked: {
-                        // check that a row is selected before executing command
-                        if (pluginsTableView.currentRow === -1) {
-                            myMessageDialog.visible = true
-
-                        } else {
-                            console.log("Edit Plugin on row: "+ pluginsTableView.currentRow)
-                            //enabled : false
-                            //root.template.clicked()
-                            newOrEditStr = "Edit"
-                            newOrEditIsProcessedBool = false
-                            popUpTestInstruction.open()
-
-                        }
-                    }
-                }
-
-                // ** Delete **
-                Button {
-                    Layout.alignment : Qt.AlignLeft
-
-                    text: "Delete Plugin"
-
-                    onClicked: {
-                        // check that a row is selected before executing command
-                        if (pluginsTableView.currentRow === -1) {
-                            myMessageDialog.visible = true
-
-                        } else {
-                            console.log("Delete Plugin on row: " + pluginsTableView.currentRow)
-                            pluginsModel.remove(pluginsTableView.currentRow);
-                            //enabled : false
-                            //root.template.clicked()
-                        }
                     }
                 }
             }
-            // Buttons for New, Edit and Delete ***************
-        }
-    }
 
+            // ** Delete **
+            Button {
+                Layout.alignment : Qt.AlignLeft
+
+                text: "Delete Plugin"
+
+                onClicked: {
+                    // check that a row is selected before executing command
+                    if (pluginsTableView.currentRow === -1) {
+                        myMessageDialog.visible = true
+
+                    } else {
+                        console.log("Delete Plugin on row: " + pluginsTableView.currentRow)
+                        pluginsModel.remove(pluginsTableView.currentRow);
+                        //enabled : false
+                        //root.template.clicked()
+                    }
+                }
+            }
+        }
+        // Buttons for New, Edit and Delete ***************
+
+    }
 
 
     // *************** MessageBoix shown when no row has been selected in the table before trying to do some stuff
@@ -402,6 +487,7 @@ Item {
                     ToolTip.visible: hovered
                     ToolTip.text: qsTr("Does the Test Instruction has all values XXXXXXXXXX")
 
+
                     onClicked: {
                         // Do control if value has change from inconming value
                         if (poUpTestInstructionIsReadyForUsedCheckBox.checked != popUpTestInstruction.inComingReadeForUse) {
@@ -564,7 +650,7 @@ Item {
                                                         readyForUse: poUpTestInstructionIsReadyForUsedCheckBox.checked,
                                                         activated: poUpTestInstructionIsActivatedCheckBox.checked,
                                                         description: popUptestInstructionDescription.text})
-//                                pluginsModel.set(pluginsTableView.rowCount-1).attributes.setproperty(0,"description",popUptestInstructionDescription.text)
+                                //                                pluginsModel.set(pluginsTableView.rowCount-1).attributes.setproperty(0,"description",popUptestInstructionDescription.text)
 
                                 // Close popUp
                                 popUpTestInstruction.close()

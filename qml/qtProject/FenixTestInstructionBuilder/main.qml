@@ -30,8 +30,8 @@ Window {
 
 
     }
-
-    /*
+}
+/*
 
     TableStuff {
         id: tabs
@@ -92,5 +92,5 @@ Window {
         }
     }
     */
-}
+
 
