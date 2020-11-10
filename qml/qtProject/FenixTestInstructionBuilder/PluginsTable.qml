@@ -16,7 +16,9 @@ Item {
         fill: rootPluginsTable
         margins: 5
     }
+    property TableView activeTableView: null
     property string newOrEditStr: "none"
+    property string activeTableViewType: "none"
     property bool newOrEditIsProcessedBool: true
 
     //Component.onCompleted: {
@@ -30,7 +32,10 @@ Item {
 
 
 
+
+
     // Model for current Plugins
+    /*
     ListModel {
         id: pluginsModel
 
@@ -48,27 +53,17 @@ Item {
             activated: false
             description: "Validates that a newly created Pacs008 has been sent to CMaaS"
         }
+    }*/
+    ListModel {
+        id: pluginsModel
+
     }
+
 
 
     // Model for current Domains
     ListModel {
         id: domainsModel
-
-        ListElement {
-            name: "Custody Cash"
-            guid: "2243085a-feee-4ae7-8ccf-03f69c0704a4"
-            readyForUse: true
-            activated: true
-            description: "All test regarding Custody Cash"
-        }
-        ListElement {
-            name: "Cusotdy Arrangement"
-            guid: "d456499c-2ad1-4677-8e1d-909a7ecab560"
-            readyForUse: false
-            activated: false
-            description: "All tests regarding Custody Arrangement"
-        }
     }
 
     Component {
@@ -143,8 +138,14 @@ Item {
 
                     model: pluginsModel
 
-                    onActivated: {
-                        console.log("User clicked on Plugins-row: "+ row)
+                    onActiveFocusChanged:  {
+                        // Set PluginsTable as the active one for editing
+                        activeTableView = pluginsTableView
+                        activeTableViewType = "Plugin"
+                    }
+
+                    Component.onCompleted: {
+                        JServer.jsLoadPluginModelFromServer();
                     }
                 }
             }
@@ -199,11 +200,20 @@ Item {
                         width: 50
                     }
 
+
                     model: domainsModel
 
-                    onActivated: {
-                        console.log("User clicked on Domain-row: "+ row)
+                    onActiveFocusChanged:  {
+                        // Set DomainsTable as the active one for editing
+                        activeTableView = domainTableView
+                        activeTableViewType = "Domain"
                     }
+
+                    Component.onCompleted: {
+                        JServer.jsLoadDomainModelFromServer();
+                    }
+
+
                 }
             }
         }
@@ -220,9 +230,10 @@ Item {
 
             // ** New **
             Button {
+                id: newButton
                 Layout.alignment : Qt.AlignLeft
 
-                text: "New Plugin"
+                text: "New " //+ activeTableViewType
 
                 onClicked: {
                     console.log("Creare New Plugin")
@@ -230,14 +241,15 @@ Item {
                     newOrEditIsProcessedBool = false
                     popUpTestInstruction.open()
 
-
                 }
+
             }
             // ** Edit **
             Button {
+                id: editButton
                 Layout.alignment : Qt.AlignLeft
 
-                text: "Edit Plugin"
+                text: "Edit " //+ activeTableViewType
 
                 onClicked: {
                     // check that a row is selected before executing command
@@ -346,11 +358,11 @@ Item {
 
             case "Edit":
                 // Copy values from current row in pluginsTableItem
-                popUptestInstructionGuid.text = pluginsModel.get(pluginsTableView.currentRow).guid
-                popUptestInstructionName.text = pluginsModel.get(pluginsTableView.currentRow).name
-                poUpTestInstructionIsReadyForUsedCheckBox.checked = pluginsModel.get(pluginsTableView.currentRow).readyForUse
-                poUpTestInstructionIsActivatedCheckBox.checked = pluginsModel.get(pluginsTableView.currentRow).activated
-                popUptestInstructionDescription.text = pluginsModel.get(pluginsTableView.currentRow).description
+                popUptestInstructionGuid.text = activeTableView.model.get(activeTableView.currentRow).guid
+                popUptestInstructionName.text = activeTableView.model.get(activeTableView.currentRow).name
+                poUpTestInstructionIsReadyForUsedCheckBox.checked = activeTableView.model.get(activeTableView.currentRow).readyForUse
+                poUpTestInstructionIsActivatedCheckBox.checked = activeTableView.model.get(activeTableView.currentRow).activated
+                popUptestInstructionDescription.text = activeTableView.model.get(activeTableView.currentRow).description
 
                 break;
 
@@ -392,7 +404,7 @@ Item {
 
             ColumnLayout {
                 Label {
-                    text: pluginsTableItem.newOrEditStr + " Test Instruction"
+                    text: pluginsTableItem.newOrEditStr + " " + activeTableViewType
                     font.pixelSize: 22
                     font.bold: true
                     color: "steelblue"
@@ -431,17 +443,17 @@ Item {
                 }
                 TextField {
                     id: popUptestInstructionName
-                    placeholderText: "Plugin Name"
+                    placeholderText: activeTableViewType + " Name"
                     //Layout.fillWidth: true
 
                     ToolTip.delay: 1000
                     ToolTip.timeout: 5000
                     ToolTip.visible: hovered
-                    ToolTip.text: qsTr("The Name for the plugin.")
+                    ToolTip.text: qsTr("The Name for the " + activeTableViewType  +".")
 
 
                     onEditingFinished: {
-                        // Do control if value has change from inconming value
+                        // Do control if value has change from inconminactiveTableViewTypeg value
                         if (popUptestInstructionName.text != popUpTestInstruction.inComingName) {
                             popUpTestInstruction.inComingNameChanged = true
                         } else {
@@ -456,12 +468,12 @@ Item {
                 CheckBox {
                     id: poUpTestInstructionIsActivatedCheckBox
                     checked: true
-                    text: qsTr("Test Instruction is Activated")
+                    text: qsTr(activeTableViewType + " is Activated")
 
                     ToolTip.delay: 1000
                     ToolTip.timeout: 5000
                     ToolTip.visible: hovered
-                    ToolTip.text: qsTr("Should the TestInstruction be activated for use in Fenix.")
+                    ToolTip.text: qsTr("Should the " + activeTableViewType + " be activated for use in Fenix.")
 
                     onClicked: {
                         // Do control if value has change from inconming value
@@ -480,12 +492,12 @@ Item {
                 CheckBox {
                     id: poUpTestInstructionIsReadyForUsedCheckBox
                     checked: true
-                    text: qsTr("Test Instruction is Ready for use")
+                    text: qsTr(activeTableViewType + " is Ready for use")
 
                     ToolTip.delay: 1000
                     ToolTip.timeout: 5000
                     ToolTip.visible: hovered
-                    ToolTip.text: qsTr("Does the Test Instruction has all values XXXXXXXXXX")
+                    ToolTip.text: qsTr("Does the " +activeTableViewType + " has all values XXXXXXXXXX")
 
 
                     onClicked: {
@@ -504,7 +516,7 @@ Item {
             ColumnLayout {
                 id: textBoxColumnLayoutId
                 Label {
-                    text: "Test Instruction Description"
+                    text: activeTableViewType + " Description"
                 }
 
 
@@ -690,6 +702,7 @@ Item {
                 Layout.alignment : Qt.AlignLeft
 
                 text: "Cancel"
+
 
             }
 

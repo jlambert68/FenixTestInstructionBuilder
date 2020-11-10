@@ -3,6 +3,7 @@ import QtQuick 2.12
 import QtQuick.Window 2.12
 import QtQuick 2.0
 import QtQuick.Controls 1.4
+import "jsFunctions.js" as JServer
 
 
 Window {
@@ -21,13 +22,17 @@ Window {
         property int rootWindowWidth: parent.width
         property int rootWindowHeight: parent.height
         property bool startedByGolang: false
+        property bool checkHasBeenDone: false
 
         Connections
         {
             target: QmlBridge
             onSendToQml: rootTable.startedByGolang = data
         }
+        Component.onCompleted:{
 
+            JServer.jsLoadPluginModelFromServer();
+        }
 
     }
 }
