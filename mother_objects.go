@@ -48,7 +48,7 @@ var (
 	remoteWorkerServerConnection *grpc.ClientConn
 	//workerClient                 worker_server_grpc_api.WorkerServerClient
 
-	mother_address_to_dial string = common_config.MotherServer_address + common_config.MotherServer_port
+	worker_address_to_dial string = common_config.LocalWorkerServer_address + ":6660" //common_config.MotherServer_port
 )
 
 // Server used for register clients Name, Ip and Por and Clients Test Enviroments and Clients Test Commandst

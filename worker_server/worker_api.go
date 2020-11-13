@@ -43,5 +43,5 @@ func (s *WorkerServer) AreYouAlive(ctx context.Context, emptyParameter *worker_s
 	workerObject.logger.WithFields(logrus.Fields{}).Info("Incoming: 'AreYouAlive'")
 
 	workerObject.logger.WithFields(logrus.Fields{}).Info("Leaving 'AreYouAlive'")
-	return &worker_server_grpc_api.AckNackResponse{Acknack: true, Comments: "I'am alive"}, nil
+	return &worker_server_grpc_api.AckNackResponse{Acknack: true, Comments: "I'am alive, from " + workerObject.uuid}, nil
 }
