@@ -1,0 +1,27 @@
+syntax = "proto3";
+package backend_server_grpc_api;
+
+//~/Programs/protoc-3.10.1-linux-x86_64/bin/protoc  -I ../grpc_api/backend_server_grpc_api --go_out=../grpc_api/backend_server_grpc_api/plugins=grpc:../grpc_api/backend_server_grpc_api ../grpc_api/backend_server_grpc_api/backend_grpc_server.proto
+
+// Parameter used for Empty inputs
+message EmptyParameter {
+}
+
+// Ack/Nack- Response message with comment
+message AckNackResponse {
+    bool acknack = 1; // True=Ack, False=Nack
+    string comments = 2; //Comments if needed
+}
+
+// The Client register service definition.
+// ***********************
+service TestInstructionBackendGrpcServices {
+
+
+    //QML Server can check if Backend server is still alive with this service
+    rpc AreYouAlive (EmptyParameter) returns (AckNackResponse) {
+    }
+
+
+}
+

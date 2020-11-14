@@ -1,23 +1,23 @@
-package main
+package qml_server
 
 import (
 	"github.com/sirupsen/logrus"
 	"google.golang.org/grpc"
 	"jlambert/FenixInception3/FenixTestInstructionBuilder/common_config"
 	"net"
-	//"jlambert/AllCombinations/grpc_api/worker_server_grpc_api"
+	//"jlambert/AllCombinations/grpc_api/backend_server_grpc_api"
 	//"database/sql"
 )
 
-type MotherObject_struct struct {
+type QmlServerObject_struct struct {
 	logger *logrus.Logger
 	//workers []workerList_struct
-	//workerIdChannel chan mother_server_grpc_api.WorkerResult
+	//workerIdChannel chan qml_server_grpc_api.WorkerResult
 	//motherDB *sql.DB
 	//workerIdToProcessChannel chan int64
 	//currentTaskName string
-	//messageToWorkerChannel chan worker_server_grpc_api.MessageToWorkerStruct
-	//fullTaskStructureObject worker_server_grpc_api.CombinationObjectStruct
+	//messageToWorkerChannel chan backend_server_grpc_api.MessageToWorkerStruct
+	//fullTaskStructureObject backend_server_grpc_api.CombinationObjectStruct
 }
 
 /*
@@ -31,28 +31,28 @@ type clientConnectionInformation_struct struct {
 /*
 type workerList_struct struct {
 	workerHasGotTask bool
-	workerInformation mother_server_grpc_api.WorkerInformation
+	workerInformation qml_server_grpc_api.WorkerInformation
 }
 
 
 */
-var motherObject *MotherObject_struct
+var qmlServerObject *QmlServerObject_struct
 
 var (
-	registerMotherServer *grpc.Server
-	lis                  net.Listener
+	registerQmlGrpcServer *grpc.Server
+	lis                   net.Listener
 )
 
 var (
 	// Standard Worker gRPC Server
-	remoteWorkerServerConnection *grpc.ClientConn
-	//workerClient                 worker_server_grpc_api.WorkerServerClient
+	remoteTestInstructionBackendServerConnection *grpc.ClientConn
+	//workerClient                 backend_server_grpc_api.WorkerServerClient
 
-	worker_address_to_dial string = common_config.LocalWorkerServer_address + ":6660" //common_config.MotherServer_port
+	testInstructionBackendServer_address_to_dial string = common_config.LocalWorkerServer_address + ":6660" //common_config.QmlServer_port
 )
 
 // Server used for register clients Name, Ip and Por and Clients Test Enviroments and Clients Test Commandst
-type MotherServer struct{}
+type QMLgRrpServer_struct struct{}
 
 // The data stored in DB to keep verisons of a project
 type projectsObjectInDB_struct struct {
@@ -69,11 +69,11 @@ type projectsObjectInDB_struct struct {
 // Object used in transformation from/to GUI-Object to/from DB
 type GUIObjectToSave_struct struct {
 	Ref         string                                    `json:"$ref"`
-	Headers     []worker_server_grpc_api.HeaderStruct     `json:"headers"`
-	ValueSets   []worker_server_grpc_api.ValueSetStruct   `json:"valueSets"`
-	Rules       []worker_server_grpc_api.RuleStruct       `json:"rules"`
-	HeaderTypes []worker_server_grpc_api.HeaderTypeStruct `json:"headerTypes"`
-	RuleTypes   []worker_server_grpc_api.RuleTypeStruct   `json:"ruleTypes"`
+	Headers     []backend_server_grpc_api.HeaderStruct     `json:"headers"`
+	ValueSets   []backend_server_grpc_api.ValueSetStruct   `json:"valueSets"`
+	Rules       []backend_server_grpc_api.RuleStruct       `json:"rules"`
+	HeaderTypes []backend_server_grpc_api.HeaderTypeStruct `json:"headerTypes"`
+	RuleTypes   []backend_server_grpc_api.RuleTypeStruct   `json:"ruleTypes"`
 }
 
 */

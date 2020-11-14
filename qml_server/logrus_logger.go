@@ -1,6 +1,7 @@
-package worker_server
+package qml_server
 
 import (
+	"fmt"
 	"github.com/sirupsen/logrus"
 	"jlambert/FenixInception3/FenixTestInstructionBuilder/common_config"
 	"log"
@@ -8,8 +9,12 @@ import (
 	"time"
 )
 
-func (workerObject *WorkerObject_struct) InitLogger(filename string) {
-	workerObject.logger = logrus.StandardLogger()
+func (qmlServerObject *QmlServerObject_struct) InitLogger(filename string) {
+
+	a := logrus.StandardLogger()
+	fmt.Println("*** Logrus ***", a)
+	fmt.Println("*** Logrus2 ***")
+	qmlServerObject.logger = logrus.StandardLogger()
 
 	switch common_config.LoggingLevel {
 
@@ -39,12 +44,12 @@ func (workerObject *WorkerObject_struct) InitLogger(filename string) {
 	//If no file then set standard out
 
 	if filename == "" {
-		workerObject.logger.Out = os.Stdout
+		qmlServerObject.logger.Out = os.Stdout
 
 	} else {
 		file, err := os.OpenFile(filename, os.O_CREATE|os.O_WRONLY, 0666)
 		if err == nil {
-			workerObject.logger.Out = file
+			qmlServerObject.logger.Out = file
 		} else {
 			log.Println("Failed to log to file, using default stderr")
 		}

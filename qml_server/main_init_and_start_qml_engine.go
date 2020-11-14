@@ -1,9 +1,10 @@
-package main
+package qml_server
 
 import (
 	"github.com/therecipe/qt/core"
 	"github.com/therecipe/qt/quick"
 	"github.com/therecipe/qt/widgets"
+	//"jlambert/FenixInception3/FenixTestInstructionBuilder"
 	"os"
 	"path/filepath"
 )

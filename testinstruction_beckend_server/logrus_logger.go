@@ -1,7 +1,6 @@
-package main
+package testinstruction_beckend_server
 
 import (
-	"fmt"
 	"github.com/sirupsen/logrus"
 	"jlambert/FenixInception3/FenixTestInstructionBuilder/common_config"
 	"log"
@@ -9,12 +8,8 @@ import (
 	"time"
 )
 
-func (workerObject *MotherObject_struct) InitLogger(filename string) {
-
-	a := logrus.StandardLogger()
-	fmt.Println("*** Logrus ***", a)
-	fmt.Println("*** Logrus2 ***")
-	workerObject.logger = logrus.StandardLogger()
+func (testInstructionBackendObject *TestInstructionBackendObject_struct) InitLogger(filename string) {
+	testInstructionBackendObject.logger = logrus.StandardLogger()
 
 	switch common_config.LoggingLevel {
 
@@ -44,12 +39,12 @@ func (workerObject *MotherObject_struct) InitLogger(filename string) {
 	//If no file then set standard out
 
 	if filename == "" {
-		workerObject.logger.Out = os.Stdout
+		testInstructionBackendObject.logger.Out = os.Stdout
 
 	} else {
 		file, err := os.OpenFile(filename, os.O_CREATE|os.O_WRONLY, 0666)
 		if err == nil {
-			workerObject.logger.Out = file
+			testInstructionBackendObject.logger.Out = file
 		} else {
 			log.Println("Failed to log to file, using default stderr")
 		}
