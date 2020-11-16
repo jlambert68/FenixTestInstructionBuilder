@@ -34,7 +34,7 @@ var (
 var (
 	// Standard gRPC Server
 	remoteQmlServerConnection *grpc.ClientConn
-	gRpcClientForQmlServer    qml_server_grpc_api.MotherServerClient
+	gRpcClientForQmlServer    qml_server_grpc_api.QmlGrpcServicesClient
 
 	qmlServer_address_to_dial string = common_config.QmlServer_address + common_config.QmlServer_port
 )

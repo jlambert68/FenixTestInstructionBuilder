@@ -36,10 +36,10 @@ func (testInstructionBackendObject *TestInstructionBackendObject_struct) SendMot
 		}).Info("gRPC connection OK to Mother Server!")
 
 		// Creates a new Clients
-		workerClient := qml_server_grpc_api.NewMotherServerClient(remoteQmlServerConnection)
+		testInstructionBackendClient := qml_server_grpc_api.NewQmlGrpcServicesClient(remoteQmlServerConnection)
 
-		//messageToMother := &qml_server_grpc_api.WorkerInformation{testInstructionBackendObject.ip, testInstructionBackendObject.port, testInstructionBackendObject.uuid, ""}
-		messageToMother := &qml_server_grpc_api.WorkerInformation{
+		//messageToQmlServer := &qml_server_grpc_api.WorkerInformation{testInstructionBackendObject.ip, testInstructionBackendObject.port, testInstructionBackendObject.uuid, ""}
+		messageToQmlServer := &qml_server_grpc_api.WorkerInformation{
 			WorkerIp:             testInstructionBackendObject.ip,
 			WorkerPort:           testInstructionBackendObject.port,
 			WorkerUuid:           testInstructionBackendObject.uuid,
@@ -49,10 +49,10 @@ func (testInstructionBackendObject *TestInstructionBackendObject_struct) SendMot
 			XXX_sizecache:        0,
 		}
 		ctx := context.Background()
-		returnMessage, err := workerClient.WorkerIPandPortIs(ctx, messageToMother)
+		returnMessage, err := testInstructionBackendClient.TestInstructionBackendServerIPandPort(ctx, messageToQmlServer)
 		if err != nil {
 			testInstructionBackendObject.logger.WithFields(logrus.Fields{
-				"client": workerClient,
+				"client": testInstructionBackendClient,
 				"error":  err,
 			}).Fatal("Problem to connect to Mother Server")
 		}
@@ -102,7 +102,7 @@ func Worker_main() {
 	// Set up WorkerObject
 	testInstructionBackendObject = &TestInstructionBackendObject_struct{iAmBusy: false}
 
-	// Create unique id for this worker
+	// Create unique id for this Backend Server
 	uuId, _ := uuid.NewUUID()
 	fmt.Println(uuId)
 	testInstructionBackendObject.uuid = uuId.String()
