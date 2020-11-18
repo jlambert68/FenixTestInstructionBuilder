@@ -4,6 +4,7 @@ import (
 	"github.com/sirupsen/logrus"
 	"google.golang.org/grpc"
 	"jlambert/FenixInception3/FenixTestInstructionBuilder/common_config"
+	"jlambert/FenixInception3/FenixTestInstructionBuilder/grpc_api/backend_server_grpc_api"
 	"net"
 	//"jlambert/AllCombinations/grpc_api/backend_server_grpc_api"
 	//"database/sql"
@@ -48,8 +49,11 @@ var (
 	remoteTestInstructionBackendServerConnection *grpc.ClientConn
 	//workerClient                 backend_server_grpc_api.WorkerServerClient
 
-	testInstructionBackendServer_address_to_dial string = common_config.LocalWorkerServer_address + ":6660" //common_config.QmlServer_port
+	testInstructionBackendServer_address_to_dial string = common_config.TestInstructionBackendServer_address + ":6660" //common_config.QmlServer_port
 )
+
+// Client for Connection towards backend server
+var testInstructionBackendServerGrpcClient backend_server_grpc_api.TestInstructionBackendGrpcServicesClient
 
 // Server used for register clients Name, Ip and Por and Clients Test Enviroments and Clients Test Commandst
 type QMLgRrpServer_struct struct{}

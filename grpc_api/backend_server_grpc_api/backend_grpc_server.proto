@@ -22,6 +22,43 @@ service TestInstructionBackendGrpcServices {
     rpc AreYouAlive (EmptyParameter) returns (AckNackResponse) {
     }
 
+    // ** QML Server forwards this questions to Backend Server **
+    // Generates an new GUID, used for identification
+    rpc GenerateGuid(EmptyParameter) returns (GuidResponse) {
+    }
+
+    // ** QML Server forwards this questions to Backend Server **
+    // Return Plugins saved by the server
+    rpc LoadPluginModelFromServer(EmptyParameter) returns (PluginQmlModelFromServerResponse) {
+    }
+
+    // ** QML Server forwards this questions to Backend Server **
+    // Return Domains saved by the server
+    rpc LoadDomainModelFromServer(EmptyParameter) returns (DomainQmlModelFromServerResponse) {
+    }
 
 }
+
+// Message for GUID
+message GuidResponse {
+    string guid = 1; //Guid
+    bool acknack = 2; // True=Ack, False=Nack
+    string comments = 3; //Comments if needed
+}
+
+// Json string message with all Plugins that was saved by Server
+message PluginQmlModelFromServerResponse {
+    string jsonStringForPluginQmlModel = 1; //Guid
+    bool acknack = 2; // True=Ack, False=Nack
+    string comments = 3; //Comments if needed
+}
+
+// Json string message with all Domains that was saved by Server
+message DomainQmlModelFromServerResponse {
+    string jsonStringForDomainQmlModel = 1; //Guid
+    bool acknack = 2; // True=Ack, False=Nack
+    string comments = 3; //Comments if needed
+}
+
+
 

@@ -18,32 +18,31 @@ import (
 	"strconv"
 )
 
-func (testInstructionBackendObject *TestInstructionBackendObject_struct) SendMotherIpAndPortForWorker() {
+func (testInstructionBackendObject *TestInstructionBackendObject_struct) SendMQmlServerIpAndPortForBackendServer() {
 
 	var err error
 
-	// Set up connection to Mother Server
+	// Set up connection to QMl Server
 	remoteQmlServerConnection, err = grpc.Dial(qmlServer_address_to_dial, grpc.WithInsecure())
 	if err != nil {
 		testInstructionBackendObject.logger.WithFields(logrus.Fields{
 			"qmlServer_address_to_dial": qmlServer_address_to_dial,
 			"error message":             err,
-		}).Error("Did not connect to Mother Server!")
+		}).Error("Did not connect to QML Server via gRPC!")
 		os.Exit(0)
 	} else {
 		testInstructionBackendObject.logger.WithFields(logrus.Fields{
 			"qmlServer_address_to_dial": qmlServer_address_to_dial,
-		}).Info("gRPC connection OK to Mother Server!")
+		}).Info("gRPC connection OK to QML Server!")
 
 		// Creates a new Clients
 		testInstructionBackendClient := qml_server_grpc_api.NewQmlGrpcServicesClient(remoteQmlServerConnection)
 
 		//messageToQmlServer := &qml_server_grpc_api.WorkerInformation{testInstructionBackendObject.ip, testInstructionBackendObject.port, testInstructionBackendObject.uuid, ""}
-		messageToQmlServer := &qml_server_grpc_api.WorkerInformation{
-			WorkerIp:             testInstructionBackendObject.ip,
-			WorkerPort:           testInstructionBackendObject.port,
-			WorkerUuid:           testInstructionBackendObject.uuid,
-			WorkerTaskUuid:       "",
+		messageToQmlServer := &qml_server_grpc_api.BackendServerInformation{
+			BackendServerIp:      testInstructionBackendObject.ip,
+			BackendServerPort:    testInstructionBackendObject.port,
+			BackendServerUuid:    testInstructionBackendObject.uuid,
 			XXX_NoUnkeyedLiteral: struct{}{},
 			XXX_unrecognized:     nil,
 			XXX_sizecache:        0,
@@ -54,7 +53,7 @@ func (testInstructionBackendObject *TestInstructionBackendObject_struct) SendMot
 			testInstructionBackendObject.logger.WithFields(logrus.Fields{
 				"client": testInstructionBackendClient,
 				"error":  err,
-			}).Fatal("Problem to connect to Mother Server")
+			}).Fatal("Problem to connect to QML Server")
 		}
 
 		testInstructionBackendObject.logger.WithFields(logrus.Fields{
@@ -62,7 +61,7 @@ func (testInstructionBackendObject *TestInstructionBackendObject_struct) SendMot
 			"testInstructionBackendObject.ip: ":   testInstructionBackendObject.ip,
 			"testInstructionBackendObject.port: ": testInstructionBackendObject.port,
 			"testInstructionBackendObject.uuid":   testInstructionBackendObject.uuid,
-		}).Info("Sent IP and Port to Mother Server")
+		}).Info("Sent IP and Port to QML Server")
 
 	}
 
@@ -93,13 +92,13 @@ func cleanup() {
 	}
 }
 
-func Worker_main() {
+func BackendServer_main() {
 
 	var err error
 
 	defer cleanup()
 
-	// Set up WorkerObject
+	// Set up BackendObject
 	testInstructionBackendObject = &TestInstructionBackendObject_struct{iAmBusy: false}
 
 	// Create unique id for this Backend Server
@@ -113,7 +112,7 @@ func Worker_main() {
 	testInstructionBackendObject.InitLogger("")
 
 	// Find first non allocated port from defined start port
-	testInstructionBackendObject.logger.WithFields(logrus.Fields{}).Info("Worker Server tries to start")
+	testInstructionBackendObject.logger.WithFields(logrus.Fields{}).Info("Backend Server tries to start")
 	for counter := 0; counter < 10; counter++ {
 		localServerEngineLocalPort = localServerEngineLocalPort + counter
 		testInstructionBackendObject.logger.WithFields(logrus.Fields{
@@ -130,7 +129,7 @@ func Worker_main() {
 				"localServerEngineLocalPort: ": localServerEngineLocalPort,
 			}).Info("Success in listening on port:")
 			testInstructionBackendObject.port = strconv.Itoa(localServerEngineLocalPort)
-			testInstructionBackendObject.ip = common_config.LocalWorkerServer_address
+			testInstructionBackendObject.ip = common_config.TestInstructionBackendServer_address
 
 			break
 		}
@@ -148,8 +147,8 @@ func Worker_main() {
 		registerTestInstructionBackendServer.Serve(lis)
 	}()
 
-	// Register at Mother Server
-	testInstructionBackendObject.SendMotherIpAndPortForWorker()
+	// Register at QML Server
+	testInstructionBackendObject.SendMQmlServerIpAndPortForBackendServer()
 
 	c := make(chan os.Signal, 2)
 	signal.Notify(c, os.Interrupt, syscall.SIGTERM)

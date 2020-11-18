@@ -71,6 +71,7 @@ func Start_qml_server() {
 	remoteTestInstructionBackendServerConnection, err = grpc.Dial(testInstructionBackendServer_address_to_dial, grpc.WithInsecure())
 	if err != nil {
 		qmlServerObject.logger.WithFields(logrus.Fields{
+			"Id": "a415ceff-0cd2-4f10-ba72-499ce06e1eea",
 			"testInstructionBackendServer_address_to_dial": testInstructionBackendServer_address_to_dial,
 			"error message": err,
 		}).Error("Did not connect to TestInstruction Backend Server!")
@@ -81,7 +82,7 @@ func Start_qml_server() {
 		}).Info("gRPC connection OK to TestInstruction Backend Server!")
 
 		// Creates a new Clients
-		testInstructionBackendServerGrpcClient := backend_server_grpc_api.NewTestInstructionBackendGrpcServicesClient(remoteTestInstructionBackendServerConnection)
+		testInstructionBackendServerGrpcClient = backend_server_grpc_api.NewTestInstructionBackendGrpcServicesClient(remoteTestInstructionBackendServerConnection)
 
 		ctx := context.Background()
 		go func() {

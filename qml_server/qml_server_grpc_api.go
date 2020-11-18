@@ -7,7 +7,7 @@ import (
 	//"jlambert/AllCombinations/grpc_api/qml_server_grpc_api"
 )
 
-func (s *QMLgRrpServer_struct) TestInstructionBackendServerIPandPort(ctx context.Context, workerInformation *qml_server_grpc_api.WorkerInformation) (*qml_server_grpc_api.AckNackResponse, error) {
+func (s *QMLgRrpServer_struct) TestInstructionBackendServerIPandPort(ctx context.Context, workerInformation *qml_server_grpc_api.BackendServerInformation) (*qml_server_grpc_api.AckNackResponse, error) {
 
 	var returnMessage *qml_server_grpc_api.AckNackResponse
 

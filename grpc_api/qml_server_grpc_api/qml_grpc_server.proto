@@ -18,7 +18,7 @@ message AckNackResponse {
 service QmlGrpcServices {
 
     //Main coordinator sends task to worker with this service
-    rpc TestInstructionBackendServerIPandPort (WorkerInformation) returns (AckNackResponse) {
+    rpc TestInstructionBackendServerIPandPort (BackendServerInformation) returns (AckNackResponse) {
     }
 
 
@@ -26,10 +26,9 @@ service QmlGrpcServices {
 }
 
 
-message WorkerInformation {
-    string worker_ip = 1;
-    string worker_port = 2;
-    string worker_uuid = 3;
-    string worker_task_uuid = 4;
+message BackendServerInformation {
+    string backend_server_ip = 1;
+    string backend_server_port = 2;
+    string backend_server_uuid = 3;
 }
 
