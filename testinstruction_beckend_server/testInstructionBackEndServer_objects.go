@@ -10,15 +10,16 @@ import (
 )
 
 type TestInstructionBackendObject_struct struct {
-	logger           *logrus.Logger
-	iAmBusy          bool
-	uuid             string
-	startTime        time.Time
-	timeBeforeFinish int32
-	currentTaskuuid  string
-	currentTaskName  string
-	ip               string
-	port             string
+	logger                *logrus.Logger
+	iAmBusy               bool
+	uuid                  string
+	startTime             time.Time
+	timeBeforeFinish      int32
+	currentTaskuuid       string
+	currentTaskName       string
+	ip                    string
+	port                  string
+	qmlServerHasConnected bool
 }
 
 var testInstructionBackendObject *TestInstructionBackendObject_struct

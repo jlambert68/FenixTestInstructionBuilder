@@ -13,6 +13,9 @@ func (s *TestInstructionBackendServer) AreYouAlive(ctx context.Context, emptyPar
 
 	testInstructionBackendObject.logger.WithFields(logrus.Fields{}).Info("Incoming: 'AreYouAlive'")
 
+	// Temp-solution for handling that QML-server is up and running
+	testInstructionBackendObject.qmlServerHasConnected = true
+
 	testInstructionBackendObject.logger.WithFields(logrus.Fields{}).Info("Leaving 'AreYouAlive'")
 	return &backend_server_grpc_api.AckNackResponse{Acknack: true, Comments: "I'am alive, from " + testInstructionBackendObject.uuid}, nil
 }
