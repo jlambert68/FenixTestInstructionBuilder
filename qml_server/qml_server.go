@@ -4,12 +4,7 @@ import (
 	//	"encoding/json"
 	//	"github.com/google/uuid"
 	"github.com/sirupsen/logrus"
-	"google.golang.org/grpc"
 
-	//"jlambert/FenixInception3/FenixTestInstructionBuilder/grpc_api/qml_server_grpc_api"
-	"golang.org/x/net/context"
-	"jlambert/FenixInception3/FenixTestInstructionBuilder/grpc_api/backend_server_grpc_api"
-	"os"
 	"time"
 	//"google.golang.org/grpc"
 	"jlambert/FenixInception3/FenixTestInstructionBuilder/common_config"
@@ -47,6 +42,7 @@ func cleanup() {
 	}
 }
 
+// *********************************************************************
 // Main function that starts everything
 // Designed this way becasue of compilation process of "qtrecipe"
 func Start_qml_server() {
@@ -55,7 +51,10 @@ func Start_qml_server() {
 	defer cleanup()
 
 	// Set up QmlServerObject
-	qmlServerObject = &QmlServerObject_struct{}
+	qmlServerObject = &QmlServerObject_struct{
+		dialedBackendGrpcServer:  false,
+		backendGrpcServerIsAlive: false,
+	}
 
 	// Init logger
 	qmlServerObject.InitLogger("")
@@ -64,48 +63,27 @@ func Start_qml_server() {
 	InitiateAndStartQmlGrpcServer()
 
 	// Start Ping Alive towards TestInstructionBackendServer
+	go qmlServerObject.veryConnectionTowardsBackendGrpcServer()
 
-	var err error
-
-	// Set up connection to TestInstructionBackend Server
-	remoteTestInstructionBackendServerConnection, err = grpc.Dial(testInstructionBackendServer_address_to_dial, grpc.WithInsecure())
-	if err != nil {
-		qmlServerObject.logger.WithFields(logrus.Fields{
-			"Id": "a415ceff-0cd2-4f10-ba72-499ce06e1eea",
-			"testInstructionBackendServer_address_to_dial": testInstructionBackendServer_address_to_dial,
-			"error message": err,
-		}).Error("Did not connect to TestInstruction Backend Server!")
-		os.Exit(0)
-	} else {
-		qmlServerObject.logger.WithFields(logrus.Fields{
-			"testInstructionBackendServer_address_to_dial": testInstructionBackendServer_address_to_dial,
-		}).Info("gRPC connection OK to TestInstruction Backend Server!")
-
-		// Creates a new Clients
-		testInstructionBackendServerGrpcClient = backend_server_grpc_api.NewTestInstructionBackendGrpcServicesClient(remoteTestInstructionBackendServerConnection)
-
-		ctx := context.Background()
-		go func() {
-			time.Sleep(30 * time.Second) // or runtime.Gosched() or similar per @misterbee
-
-			returnMessage, err := testInstructionBackendServerGrpcClient.AreYouAlive(ctx, &backend_server_grpc_api.EmptyParameter{})
-
-			if err != nil {
-				qmlServerObject.logger.WithFields(logrus.Fields{
-					"client": testInstructionBackendServerGrpcClient,
-					"error":  err,
-				}).Fatal("Problem to connect to TestInstruction Backend Server")
-			}
-
+	// Initate and Start QML-engine
+	// ***** LAST PART OF THE PROGRAM *****
+	for {
+		if qmlServerObject.dialedBackendGrpcServer == true && qmlServerObject.backendGrpcServerIsAlive == true {
+			// Only start qml server if a gRPC connection has been done
 			qmlServerObject.logger.WithFields(logrus.Fields{
-				"returnMessage: ": returnMessage,
-			}).Info("Receive I am Alive from TestInstruction Backend Server")
+				"id": "5199753b-2f2b-4e7e-83ef-6581fcf686bb",
+			}).Info("Try to start up qml server")
+			initiateAndStartQmlEngine()
+			// Due to qtreceipt compiling style, the program doesn't continue from here
 
-		}()
-
-		// Initate and Start QML-engine
-		// ***** LAST PART OF THE PROGRAM *****
-		initiateAndStartQmlEngine()
-
+		} else {
+			qmlServerObject.logger.WithFields(logrus.Fields{
+				"id":              "44692e25-625e-4857-aec2-6d617489de9d",
+				"qmlServerObject": qmlServerObject,
+			}).Info("sleeping...for another 15 seconds wail waiting for Backend to start")
+		}
+		//fmt.Println("sleeping...for another 15 seconds wail waiting for Backend to start")
+		time.Sleep(15 * time.Second) // or runtime.Gosched() or similar per @misterbee
 	}
+
 }

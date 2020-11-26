@@ -11,7 +11,9 @@ import (
 )
 
 type QmlServerObject_struct struct {
-	logger *logrus.Logger
+	logger                   *logrus.Logger
+	dialedBackendGrpcServer  bool
+	backendGrpcServerIsAlive bool
 	//workers []workerList_struct
 	//workerIdChannel chan qml_server_grpc_api.WorkerResult
 	//motherDB *sql.DB
@@ -57,44 +59,3 @@ var testInstructionBackendServerGrpcClient backend_server_grpc_api.TestInstructi
 
 // Server used for register clients Name, Ip and Por and Clients Test Enviroments and Clients Test Commandst
 type QMLgRrpServer_struct struct{}
-
-// The data stored in DB to keep verisons of a project
-type projectsObjectInDB_struct struct {
-	version_key         string
-	time_nanoint        int64
-	date_time_string    string
-	project_name        string
-	project_description string
-	deleted             bool
-	project_key         string
-}
-
-/*
-// Object used in transformation from/to GUI-Object to/from DB
-type GUIObjectToSave_struct struct {
-	Ref         string                                    `json:"$ref"`
-	Headers     []backend_server_grpc_api.HeaderStruct     `json:"headers"`
-	ValueSets   []backend_server_grpc_api.ValueSetStruct   `json:"valueSets"`
-	Rules       []backend_server_grpc_api.RuleStruct       `json:"rules"`
-	HeaderTypes []backend_server_grpc_api.HeaderTypeStruct `json:"headerTypes"`
-	RuleTypes   []backend_server_grpc_api.RuleTypeStruct   `json:"ruleTypes"`
-}
-
-*/
-
-// Variables used for dicide what kind of object to save in DB
-// 1) Ordinary Combination Object
-// 2) HeadersAndHeaderValues received from jExcel
-type objectTypeToSave int
-
-const (
-	OrdinaryCombinationObject    objectTypeToSave = 1
-	HeadersAndHeaderValuesObject objectTypeToSave = 2
-	NewOrdinaryCombinationObject objectTypeToSave = 3
-)
-
-// Used to set HeaderTypes
-const (
-	HeaderTypeStandard_id  = 1
-	HeaderTypeStandardText = "Standard"
-)
