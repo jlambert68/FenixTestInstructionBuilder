@@ -54,16 +54,20 @@ func Start_qml_server() {
 	qmlServerObject = &QmlServerObject_struct{
 		dialedBackendGrpcServer:  false,
 		backendGrpcServerIsAlive: false,
+		//qmlBridge : qmlBridge,
 	}
 
 	// Init logger
 	qmlServerObject.InitLogger("")
 
+	// Initiate channels for communication between QML and gRPC
+	initiateChannels()
+
 	// Inititate and start QML Server GRPC-engine
 	InitiateAndStartQmlGrpcServer()
 
 	// Start Ping Alive towards TestInstructionBackendServer
-	go qmlServerObject.veryConnectionTowardsBackendGrpcServer()
+	go qmlServerObject.verifyConnectionTowardsBackendGrpcServer()
 
 	// Initate and Start QML-engine
 	// ***** LAST PART OF THE PROGRAM *****
@@ -73,7 +77,9 @@ func Start_qml_server() {
 			qmlServerObject.logger.WithFields(logrus.Fields{
 				"id": "5199753b-2f2b-4e7e-83ef-6581fcf686bb",
 			}).Info("Try to start up qml server")
+
 			initiateAndStartQmlEngine()
+			break
 			// Due to qtreceipt compiling style, the program doesn't continue from here
 
 		} else {

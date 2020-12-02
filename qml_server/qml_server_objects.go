@@ -14,6 +14,7 @@ type QmlServerObject_struct struct {
 	logger                   *logrus.Logger
 	dialedBackendGrpcServer  bool
 	backendGrpcServerIsAlive bool
+	//	qmlBridge                *QmlBridge
 	//workers []workerList_struct
 	//workerIdChannel chan qml_server_grpc_api.WorkerResult
 	//motherDB *sql.DB

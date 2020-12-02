@@ -3,14 +3,12 @@ package qml_server
 import (
 	"github.com/therecipe/qt/core"
 	"github.com/therecipe/qt/quick"
-	"github.com/therecipe/qt/widgets"
-	//"jlambert/FenixInception3/FenixTestInstructionBuilder"
-	"os"
 	"path/filepath"
 )
 
 // *********************************************************************
 // Struct that handles communication to and from QML
+/*
 type QmlBridge struct {
 	core.QObject
 
@@ -21,12 +19,14 @@ type QmlBridge struct {
 	_ func() string            `slot:"loadPluginModelFromServer"`
 	_ func() string            `slot:"loadDomainModelFromServer"`
 }
-
+*/
 // *********************************************************************
 // Initiate view for QML and start a directory change watcher
 func initQQuickView(path string) *quick.QQuickView {
 
+	println("Before View")
 	var view = quick.NewQQuickView(nil)
+	println("After View")
 
 	println(filepath.Dir(path))
 
@@ -51,38 +51,52 @@ func initiateAndStartQmlEngine() {
 
 	// ******************************************************
 	// Set up QML connection
-	var path = filepath.Join(os.Getenv("GOPATH"), "src", "jlambert", "FenixInception3", "FenixTestInstructionBuilder", "qml", "qtProject", "FenixTestInstructionBuilder", "main.qml")
-	println(path)
-	core.QCoreApplication_SetAttribute(core.Qt__AA_EnableHighDpiScaling, true)
+	/*
+		var path = filepath.Join(os.Getenv("GOPATH"), "src", "jlambert", "FenixInception3", "FenixTestInstructionBuilder", "qml", "qtProject", "FenixTestInstructionBuilder", "main.qml")
+		println(path)
+		core.QCoreApplication_SetAttribute(core.Qt__AA_EnableHighDpiScaling, true)
+		println("1")
+		app := widgets.NewQApplication(len(os.Args), os.Args)
+		println("2")
+		view := quick.NewQQuickView(nil)
+		//var view = initQQuickView(path)
+		println("2b")
 
-	app := widgets.NewQApplication(len(os.Args), os.Args)
+		var qmlBridge = NewQmlBridge(nil)
 
-	//view := quick.NewQQuickView(nil)
-	var view = initQQuickView(path)
-	var qmlBridge = NewQmlBridge(nil)
-	/*CLEANUP
-	qmlBridge.ConnectSendToGo(func(data string) string {
-		fmt.Println("go:", data)
-		return "hello from go"
-	})
-	CLEANUP*/
+
+		println("3")
+		// Connect services exposed to QML
+		qmlBridge.ConnectGenerateGuid(generateGuid)
+		qmlBridge.ConnectCheckIfServerIsOnline(checkIfServerIsOnline)
+		qmlBridge.ConnectLoadPluginModelFromServer(loadPluginModelFromServer)
+		qmlBridge.ConnectLoadDomainModelFromServer(loadDomainModelFromServer)
+
+		view.RootContext().SetContextProperty("QmlBridge", qmlBridge)
+		view.SetSource(core.NewQUrl3(path, 0))
+		println("4")
+		view.SetTitle("Test Instruction Builder")
+		view.SetResizeMode(quick.QQuickView__SizeRootObjectToView)
+		//view.SetSource(core.NewQUrl3("qrc:/qml/main.qml", 0))
+		view.Show()
+		println("Just before: qmlBridge.SendToQml ")
+
+		// Tell QML that it should use Go-server for instead of local mocks for certain functions
+		qmlBridge.SendToQml(true)
+
+		println("Just before: app.Exec() ")
+		app.Exec()
+	*/
+
+	// ********************
 
 	// Connect services exposed to QML
-	qmlBridge.ConnectGenerateGuid(generateGuid)
-	qmlBridge.ConnectCheckIfServerIsOnline(checkIfServerIsOnline)
-	qmlBridge.ConnectLoadPluginModelFromServer(loadPluginModelFromServer)
-	qmlBridge.ConnectLoadDomainModelFromServer(loadDomainModelFromServer)
+	/*
+		qmlServerObject.qmlBridge.ConnectGenerateGuid(generateGuid)
+		qmlServerObject.qmlBridge.ConnectCheckIfServerIsOnline(checkIfServerIsOnline)
+		qmlServerObject.qmlBridge.ConnectLoadPluginModelFromServer(loadPluginModelFromServer)
+		qmlServerObject.qmlBridge.ConnectLoadDomainModelFromServer(loadDomainModelFromServer)
+	*/
 
-	view.RootContext().SetContextProperty("QmlBridge", qmlBridge)
-	view.SetSource(core.NewQUrl3(path, 0))
-
-	view.SetTitle("Test Instruction Builder")
-	view.SetResizeMode(quick.QQuickView__SizeRootObjectToView)
-	//view.SetSource(core.NewQUrl3("qrc:/qml/main.qml", 0))
-	view.Show()
-
-	// Tell QML that it should use Go-server for instead of local mocks for certain functions
-	qmlBridge.SendToQml(true)
-
-	app.Exec()
+	//TODO rensa c-filer
 }

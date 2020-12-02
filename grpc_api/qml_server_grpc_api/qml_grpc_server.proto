@@ -4,8 +4,8 @@ package qml_server_grpc_api;
 //~/Programs/protoc-3.10.1-linux-x86_64/bin/protoc  -I qml_server_grpc_api --go_out=plugins=grpc:qml_server_grpc_api qml_server_grpc_api/qml_grpc_server.proto
 
 // Parameter used for Empty inputs
-//message EmptyParameter {
-//}
+message EmptyParameter {
+}
 
 // Ack/Nack- Response message with comment
 message AckNackResponse {
@@ -20,6 +20,8 @@ service QmlGrpcServices {
     //Main coordinator sends task to worker with this service
     rpc TestInstructionBackendServerIPandPort (BackendServerInformation) returns (AckNackResponse) {
     }
+
+
 
 
 

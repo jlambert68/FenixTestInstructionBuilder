@@ -11,6 +11,8 @@ func (s *QMLgRrpServer_struct) TestInstructionBackendServerIPandPort(ctx context
 
 	var returnMessage *qml_server_grpc_api.AckNackResponse
 
+	qmlServerObject.backendGrpcServerIsAlive = true
+
 	qmlServerObject.logger.WithFields(logrus.Fields{
 		"workerInformation: ": workerInformation,
 	}).Info("Incoming: 'WorkerIPandPortIs'")
@@ -23,7 +25,7 @@ func (s *QMLgRrpServer_struct) TestInstructionBackendServerIPandPort(ctx context
 
 	returnMessage = &qml_server_grpc_api.AckNackResponse{
 		Acknack:              true,
-		Comments:             "Mother recorded worker Id information",
+		Comments:             "QML server recorded worker Id information",
 		XXX_NoUnkeyedLiteral: struct{}{},
 		XXX_unrecognized:     nil,
 		XXX_sizecache:        0,

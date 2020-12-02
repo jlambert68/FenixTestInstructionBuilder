@@ -9,7 +9,7 @@ import (
 )
 
 // Very that a connection to Backend Servers gRPC-api is up and open
-func (qmlServerObject *QmlServerObject_struct) veryConnectionTowardsBackendGrpcServer() {
+func (qmlServerObject *QmlServerObject_struct) verifyConnectionTowardsBackendGrpcServer() {
 
 	var err error
 	ctx := context.Background()
