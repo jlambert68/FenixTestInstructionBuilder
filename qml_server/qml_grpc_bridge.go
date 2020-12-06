@@ -8,7 +8,11 @@ import (
 
 // *********************************************************************
 // Used by QML to verify that the QML-code was started from server and not from QML-editor
-func CheckIfServerIsOnline() bool {
+func CheckIfServerIsOnline(qmlLogger *logrus.Logger) bool {
+
+	qmlLogger.WithFields(logrus.Fields{
+		"ID": "a2bd8237-97f9-4c34-b057-1c64bf61be4c",
+	}).Debug("Incoming call from QML-GUI to 'CheckIfServerIsOnline()'")
 
 	return true
 }
@@ -16,6 +20,10 @@ func CheckIfServerIsOnline() bool {
 // *********************************************************************
 // Forward a call from frontend to backend to generate a guid in string format
 func GenerateGuid() string {
+
+	QmlServerObject.logger.WithFields(logrus.Fields{
+		"ID": "ec435580-98a3-42be-865b-bc59234648f4",
+	}).Debug("Incoming call from QML-GUI to 'GenerateGuid()'")
 
 	// Variable to be sent back to frontend
 	var returnGuid string
@@ -32,7 +40,7 @@ func GenerateGuid() string {
 	if err != nil {
 		// Something went wrong in backend
 		returnGuid = "EROOR in Backend when trying to generate a new GUID"
-		qmlServerObject.logger.WithFields(logrus.Fields{
+		QmlServerObject.logger.WithFields(logrus.Fields{
 			"Id":             "b847e2e5-4665-4dd6-8492-200b1a2d48a3",
 			"err":            err,
 			"backendMessage": backendMessage,
@@ -43,7 +51,7 @@ func GenerateGuid() string {
 	} else {
 		if backendMessage.Acknack == false {
 			// Backend couldn't generate GUID
-			qmlServerObject.logger.WithFields(logrus.Fields{
+			QmlServerObject.logger.WithFields(logrus.Fields{
 				"Id":             "5d075469-d78e-436a-a798-51374891e183",
 				"err":            err,
 				"backendMessage": backendMessage,
@@ -53,7 +61,7 @@ func GenerateGuid() string {
 
 		} else {
 			// OK, forwarding GUID to front end
-			qmlServerObject.logger.WithFields(logrus.Fields{
+			QmlServerObject.logger.WithFields(logrus.Fields{
 				"Id":             "89b79ad2-c559-49be-84e6-02eb61ba9993",
 				"err":            err,
 				"backendMessage": backendMessage,
@@ -65,6 +73,11 @@ func GenerateGuid() string {
 	}
 
 	// Send back response to frontend
+	QmlServerObject.logger.WithFields(logrus.Fields{
+		"ID":         "25f1d06c-7395-461f-b3ff-e554502f6471",
+		"returnGuid": returnGuid,
+	}).Debug("Leaving 'GenerateGuid()'")
+
 	return returnGuid
 }
 
@@ -85,7 +98,7 @@ var qml_qGRPC_bridges_CanStart = false
 func initiateChannels() {
 
 	// Define channels  used for communication between QML och gRPC
-	qmlServerObject.logger.WithFields(logrus.Fields{
+	QmlServerObject.logger.WithFields(logrus.Fields{
 		"ID": "a2dfc565-e025-4cb2-a2b5-ab6739378c5a",
 	}).Debug("Initiate channels used for communication between QML och gRPC")
 
@@ -96,7 +109,7 @@ func initiateChannels() {
 	LoadDomainModelFromServerChannel_ToGrpc = make(chan bool, 1)
 
 	// Start up gRPC services as goroutines
-	qmlServerObject.logger.WithFields(logrus.Fields{
+	QmlServerObject.logger.WithFields(logrus.Fields{
 		"ID": "3e74d4b7-585d-421b-8c51-38cf809d17a5",
 	}).Debug("Start functions, as goroutines, used by QML that calls backend via gRPC ")
 
@@ -104,8 +117,12 @@ func initiateChannels() {
 	go LoadPluginModelFromServer_gRPC()
 	go LoadDomainModelFromServer_gRPC()
 
-	// QML-gRPC-bridge is ready for use
-	qml_qGRPC_bridges_CanStart = true
+}
+
+// *********************************************************************
+// Turn on/off the function to talk to gRPC via the QML-gRPC bridge
+func StartStopQmlGrpcBridgr(canBeRun bool) {
+	qml_qGRPC_bridges_CanStart = canBeRun
 }
 
 // *********************************************************************
@@ -117,7 +134,7 @@ func LoadPluginModelFromServer() string {
 	if qml_qGRPC_bridges_CanStart == true {
 		var returnMessage string
 
-		qmlServerObject.logger.WithFields(logrus.Fields{
+		QmlServerObject.logger.WithFields(logrus.Fields{
 			"ID": "b35ab173-c624-401e-abd5-cda8f54eabe8",
 		}).Debug("Call from QML to 'LoadPluginModelFromServer()'")
 
@@ -127,7 +144,7 @@ func LoadPluginModelFromServer() string {
 		// Wait for return message from gRPC
 		returnMessage = <-LoadPluginModelFromServerChannel_FromGrpc
 
-		qmlServerObject.logger.WithFields(logrus.Fields{
+		QmlServerObject.logger.WithFields(logrus.Fields{
 			"ID":            "8cde35f4-209a-43d4-a977-d2d0520d445b",
 			"returnMessage": returnMessage,
 		}).Debug("Message got back, via channel, from LoadPluginModelFromServer_gRPC-call")
@@ -152,7 +169,7 @@ func LoadPluginModelFromServer_gRPC() {
 	for {
 		// Wait for trigger message to start processing
 		<-LoadPluginModelFromServerChannel_ToGrpc
-		qmlServerObject.logger.WithFields(logrus.Fields{
+		QmlServerObject.logger.WithFields(logrus.Fields{
 			"ID": "1936d25f-7edc-474d-8203-cb6ed094dbc3",
 		}).Debug("Message from qml, via channel, to do 'LoadPluginModelFromServer_gRPC'-call")
 
@@ -167,7 +184,7 @@ func LoadPluginModelFromServer_gRPC() {
 		if err != nil {
 			// Something went wrong in backend
 			jsonToSendAsString = "EROOR in Backend when trying to generate list of Plugins"
-			qmlServerObject.logger.WithFields(logrus.Fields{
+			QmlServerObject.logger.WithFields(logrus.Fields{
 				"Id":             "b4e2b4d6-2471-4a54-8cb9-3523ba34251e",
 				"err":            err,
 				"backendMessage": backendMessage,
@@ -178,7 +195,7 @@ func LoadPluginModelFromServer_gRPC() {
 		} else {
 			if backendMessage.Acknack == false {
 				// Backend couldn't generate GUID
-				qmlServerObject.logger.WithFields(logrus.Fields{
+				QmlServerObject.logger.WithFields(logrus.Fields{
 					"Id":             "36a17a2c-9c1a-41aa-9405-c050436f8b6b",
 					"err":            err,
 					"backendMessage": backendMessage,
@@ -188,7 +205,7 @@ func LoadPluginModelFromServer_gRPC() {
 
 			} else {
 				// OK, forwarding GUID to front end
-				qmlServerObject.logger.WithFields(logrus.Fields{
+				QmlServerObject.logger.WithFields(logrus.Fields{
 					"Id":             "c462b8f4-8291-4d01-8ec3-e913acd25ebe",
 					"err":            err,
 					"backendMessage": backendMessage,
@@ -215,7 +232,7 @@ func LoadDomainModelFromServer() string {
 	if qml_qGRPC_bridges_CanStart == true {
 		var returnMessage string
 
-		qmlServerObject.logger.WithFields(logrus.Fields{
+		QmlServerObject.logger.WithFields(logrus.Fields{
 			"ID": "2181a9c3-dfd4-4207-ba1c-8cf56884e7cd",
 		}).Debug("Call from QML to 'LoadDomainModelFromServer()'")
 
@@ -225,7 +242,7 @@ func LoadDomainModelFromServer() string {
 		// Wait for return message from gRPC
 		returnMessage = <-LoadDomainModelFromServerChannel_FromGrpc
 
-		qmlServerObject.logger.WithFields(logrus.Fields{
+		QmlServerObject.logger.WithFields(logrus.Fields{
 			"ID":            "63abc3d4-55ce-4ebb-8426-8f72ab0cd2d5",
 			"returnMessage": returnMessage,
 		}).Debug("Message got back, via channel, from LoadDomainModelFromServer_gRPC-call")
@@ -249,7 +266,7 @@ func LoadDomainModelFromServer_gRPC() string {
 	for {
 		// Wait for trigger message to start processing
 		<-LoadDomainModelFromServerChannel_ToGrpc
-		qmlServerObject.logger.WithFields(logrus.Fields{
+		QmlServerObject.logger.WithFields(logrus.Fields{
 			"ID": "1936d25f-7edc-474d-8203-cb6ed094dbc3",
 		}).Debug("Message from qml, via channel, to do 'LoadPluginModelFromServer_gRPC'-call")
 
@@ -264,7 +281,7 @@ func LoadDomainModelFromServer_gRPC() string {
 		if err != nil {
 			// Something went wrong in backend
 			jsonToSendAsString = "EROOR in Backend when trying to generate list of Domains"
-			qmlServerObject.logger.WithFields(logrus.Fields{
+			QmlServerObject.logger.WithFields(logrus.Fields{
 				"Id":             "e461c7ea2-d704-4b6e-a5a4-7f445c65e6fa",
 				"err":            err,
 				"backendMessage": backendMessage,
@@ -275,7 +292,7 @@ func LoadDomainModelFromServer_gRPC() string {
 		} else {
 			if backendMessage.Acknack == false {
 				// Backend couldn't generate GUID
-				qmlServerObject.logger.WithFields(logrus.Fields{
+				QmlServerObject.logger.WithFields(logrus.Fields{
 					"Id":             "c3544c25-7a92-413c-99ac-895da968cf6e",
 					"err":            err,
 					"backendMessage": backendMessage,
@@ -285,7 +302,7 @@ func LoadDomainModelFromServer_gRPC() string {
 
 			} else {
 				// OK, forwarding GUID to front end
-				qmlServerObject.logger.WithFields(logrus.Fields{
+				QmlServerObject.logger.WithFields(logrus.Fields{
 					"Id":             "d76404d2-8497-49ea-ab2f-8295e597f5d5",
 					"err":            err,
 					"backendMessage": backendMessage,

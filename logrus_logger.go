@@ -1,4 +1,4 @@
-package qml_server
+package main
 
 import (
 	"fmt"
@@ -9,12 +9,13 @@ import (
 	"time"
 )
 
-func (qmlServerObject *QmlServerObject_struct) InitLogger(filename string) {
+func InitLogger(filename string) *logrus.Logger {
+	var logger *logrus.Logger
 
 	a := logrus.StandardLogger()
 	fmt.Println("*** Logrus ***", a)
 	fmt.Println("*** Logrus2 ***")
-	qmlServerObject.logger = logrus.StandardLogger()
+	logger = logrus.StandardLogger()
 
 	switch common_config.LoggingLevel {
 
@@ -44,16 +45,18 @@ func (qmlServerObject *QmlServerObject_struct) InitLogger(filename string) {
 	//If no file then set standard out
 
 	if filename == "" {
-		qmlServerObject.logger.Out = os.Stdout
+		logger.Out = os.Stdout
 
 	} else {
 		file, err := os.OpenFile(filename, os.O_CREATE|os.O_WRONLY, 0666)
 		if err == nil {
-			qmlServerObject.logger.Out = file
+			logger.Out = file
 		} else {
 			log.Println("Failed to log to file, using default stderr")
 		}
 	}
+
+	return logger
 
 	// Should only be done from init functions
 	//grpclog.SetLoggerV2(grpclog.NewLoggerV2(logger.Out, logger.Out, logger.Out))

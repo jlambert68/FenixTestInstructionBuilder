@@ -11,14 +11,14 @@ func (s *QMLgRrpServer_struct) TestInstructionBackendServerIPandPort(ctx context
 
 	var returnMessage *qml_server_grpc_api.AckNackResponse
 
-	qmlServerObject.backendGrpcServerIsAlive = true
+	QmlServerObject.backendGrpcServerIsAlive = true
 
-	qmlServerObject.logger.WithFields(logrus.Fields{
+	QmlServerObject.logger.WithFields(logrus.Fields{
 		"workerInformation: ": workerInformation,
 	}).Info("Incoming: 'WorkerIPandPortIs'")
 
 	// Save Worker Id information
-	//qmlServerObject.workers = append(qmlServerObject.workers, workerList_struct{false, *workerInformation})
+	//QmlServerObject.workers = append(QmlServerObject.workers, workerList_struct{false, *workerInformation})
 
 	//Create return message to worker
 	//returnMessage = &qml_server_grpc_api.AckNackResponse{true, "Mother recorded worker Id information"}
@@ -30,7 +30,7 @@ func (s *QMLgRrpServer_struct) TestInstructionBackendServerIPandPort(ctx context
 		XXX_unrecognized:     nil,
 		XXX_sizecache:        0,
 	}
-	qmlServerObject.logger.WithFields(logrus.Fields{}).Info("Leaving 'WorkerIPandPortIs'")
+	QmlServerObject.logger.WithFields(logrus.Fields{}).Info("Leaving 'WorkerIPandPortIs'")
 
 	return returnMessage, nil
 }

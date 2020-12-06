@@ -92,10 +92,10 @@ func initiateAndStartQmlEngine() {
 
 	// Connect services exposed to QML
 	/*
-		qmlServerObject.qmlBridge.ConnectGenerateGuid(generateGuid)
-		qmlServerObject.qmlBridge.ConnectCheckIfServerIsOnline(checkIfServerIsOnline)
-		qmlServerObject.qmlBridge.ConnectLoadPluginModelFromServer(loadPluginModelFromServer)
-		qmlServerObject.qmlBridge.ConnectLoadDomainModelFromServer(loadDomainModelFromServer)
+		QmlServerObject.qmlBridge.ConnectGenerateGuid(generateGuid)
+		QmlServerObject.qmlBridge.ConnectCheckIfServerIsOnline(checkIfServerIsOnline)
+		QmlServerObject.qmlBridge.ConnectLoadPluginModelFromServer(loadPluginModelFromServer)
+		QmlServerObject.qmlBridge.ConnectLoadDomainModelFromServer(loadDomainModelFromServer)
 	*/
 
 	//TODO rensa c-filer

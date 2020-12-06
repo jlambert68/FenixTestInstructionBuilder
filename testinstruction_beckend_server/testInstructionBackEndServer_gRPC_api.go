@@ -11,18 +11,22 @@ import (
 // Used for checking if Backen Server is alive
 func (s *TestInstructionBackendServer) AreYouAlive(ctx context.Context, emptyParameter *backend_server_grpc_api.EmptyParameter) (*backend_server_grpc_api.AckNackResponse, error) {
 
-	testInstructionBackendObject.logger.WithFields(logrus.Fields{}).Info("Incoming: 'AreYouAlive'")
+	testInstructionBackendObject.logger.WithFields(logrus.Fields{}).Debug("Incoming: 'AreYouAlive'")
 
 	// Temp-solution for handling that QML-server is up and running
 	testInstructionBackendObject.qmlServerHasConnected = true
 
-	testInstructionBackendObject.logger.WithFields(logrus.Fields{}).Info("Leaving 'AreYouAlive'")
+	testInstructionBackendObject.logger.WithFields(logrus.Fields{}).Debug("Leaving 'AreYouAlive'")
 	return &backend_server_grpc_api.AckNackResponse{Acknack: true, Comments: "I'am alive, from " + testInstructionBackendObject.uuid}, nil
 }
 
 // *********************************************************************
 // Generates a guid in string format to be sent front end
 func (s *TestInstructionBackendServer) GenerateGuid(ctx context.Context, emptyParameter *backend_server_grpc_api.EmptyParameter) (*backend_server_grpc_api.GuidResponse, error) {
+
+	testInstructionBackendObject.logger.WithFields(logrus.Fields{
+		"id": "85799f31-71b1-4c0e-9693-81fedd56bd41",
+	}).Debug("Incoming 'GenerateGuid'")
 
 	var returnGuid *backend_server_grpc_api.GuidResponse
 	newGuid, _ := uuid.NewUUID()
@@ -36,6 +40,11 @@ func (s *TestInstructionBackendServer) GenerateGuid(ctx context.Context, emptyPa
 		XXX_sizecache:        0,
 	}
 
+	testInstructionBackendObject.logger.WithFields(logrus.Fields{
+		"id":         "8ba74bad-a3c9-4018-b0c3-d26593d30f9f",
+		"returnGuid": returnGuid,
+	}).Debug("Leaveing 'GenerateGuid'")
+
 	return returnGuid, nil
 
 }
@@ -43,6 +52,10 @@ func (s *TestInstructionBackendServer) GenerateGuid(ctx context.Context, emptyPa
 // *********************************************************************
 // Load stored data about Plugins and send towards frontend, via QML-server
 func (s *TestInstructionBackendServer) LoadPluginModelFromServer(ctx context.Context, emptyParameter *backend_server_grpc_api.EmptyParameter) (*backend_server_grpc_api.PluginQmlModelFromServerResponse, error) {
+
+	testInstructionBackendObject.logger.WithFields(logrus.Fields{
+		"id": "649a3945-d24d-42fb-b8b3-c01bf16c552a",
+	}).Debug("Incoming 'LoadPluginModelFromServer'")
 
 	var returnMessage *backend_server_grpc_api.PluginQmlModelFromServerResponse
 
@@ -95,6 +108,11 @@ func (s *TestInstructionBackendServer) LoadPluginModelFromServer(ctx context.Con
 		XXX_sizecache:               0,
 	}
 
+	testInstructionBackendObject.logger.WithFields(logrus.Fields{
+		"id":         "c2c5fdd3-1c31-4694-8428-b8efd448c561",
+		"returnGuid": returnMessage,
+	}).Debug("Leaveing 'LoadPluginModelFromServer'")
+
 	return returnMessage, nil
 
 }
@@ -102,6 +120,10 @@ func (s *TestInstructionBackendServer) LoadPluginModelFromServer(ctx context.Con
 // *********************************************************************
 // Load stored data about Domains and send towards frontend, via QML-server
 func (s *TestInstructionBackendServer) LoadDomainModelFromServer(ctx context.Context, emptyParameter *backend_server_grpc_api.EmptyParameter) (*backend_server_grpc_api.DomainQmlModelFromServerResponse, error) {
+
+	testInstructionBackendObject.logger.WithFields(logrus.Fields{
+		"id": "739eb55d-967e-486e-a4a7-fbd530da5405",
+	}).Debug("Incoming 'LoadDomainModelFromServer'")
 
 	var returnMessage *backend_server_grpc_api.DomainQmlModelFromServerResponse
 
@@ -153,6 +175,11 @@ func (s *TestInstructionBackendServer) LoadDomainModelFromServer(ctx context.Con
 		XXX_unrecognized:            nil,
 		XXX_sizecache:               0,
 	}
+
+	testInstructionBackendObject.logger.WithFields(logrus.Fields{
+		"id":         "b4f300fc-5dca-4611-9d6b-6f46c55900c2",
+		"returnGuid": returnMessage,
+	}).Debug("Leaveing 'LoadDomainModelFromServer'")
 
 	return returnMessage, nil
 

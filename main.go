@@ -2,26 +2,13 @@ package main
 
 import (
 	"fmt"
+	"github.com/sirupsen/logrus"
 	"github.com/therecipe/qt/core"
 	"github.com/therecipe/qt/gui"
 	"github.com/therecipe/qt/quick"
 	"jlambert/FenixInception3/FenixTestInstructionBuilder/qml_server"
 	"os"
 )
-
-// Main function that starts everything
-// Designed this way becasue of compilation process of "qtrecipe"
-//author: https://github.com/longlongh4
-
-/*
-type QmlBridge struct {
-	core.QObject
-
-	_ func(data string)        `signal:"sendToQml"`
-	_ func(data string) string `slot:"sendToGo"`
-}
-
-*/
 
 type QmlBridge struct {
 	core.QObject
@@ -34,7 +21,19 @@ type QmlBridge struct {
 	_ func() string `slot:"loadDomainModelFromServer"`
 }
 
+type qml_struct struct {
+}
+
+var qmlLogger *logrus.Logger
+
+// Main function that starts everything
+// Designed this way becasue of compilation process of "qtrecipe"
 func main() {
+
+	// Init logger
+	qmlLogger = InitLogger("")
+
+	// Set QML parts
 	core.QCoreApplication_SetAttribute(core.Qt__AA_EnableHighDpiScaling, true)
 
 	gui.NewQGuiApplication(len(os.Args), os.Args)
@@ -44,28 +43,18 @@ func main() {
 
 	var qmlBridge = NewQmlBridge(nil)
 	qmlBridge.ConnectGenerateGuid(qml_server.GenerateGuid)
-	qmlBridge.ConnectCheckIfServerIsOnline(qml_server.CheckIfServerIsOnline)
-	qmlBridge.ConnectLoadPluginModelFromServer(loadPluginModelFromServer)
-	qmlBridge.ConnectLoadDomainModelFromServer(loadDomainModelFromServer)
+	qmlBridge.ConnectCheckIfServerIsOnline(checkIfServerIsOnline)
+	qmlBridge.ConnectLoadPluginModelFromServer(qml_server.LoadPluginModelFromServer)
+	qmlBridge.ConnectLoadDomainModelFromServer(qml_server.LoadDomainModelFromServer)
 
-	/*
-		qmlBridge.ConnectSendToGo(func(data string) string {
-			fmt.Println("go:", data)
-			return "hello from go"
-		})
-
-	*/
 	view.RootContext().SetContextProperty("QmlBridge", qmlBridge)
 	view.SetSource(core.NewQUrl3("qrc:/qml/qtProject/FenixTestInstructionBuilder/main.qml", 0))
 
-	/*go func() {
-		for t := range time.NewTicker(time.Second * 1).C {
-			qmlBridge.SendToQml(t.Format(time.ANSIC))
-		}
-	}()
-	*/
-	fmt.Println("Starting QML-server")
-	qml_server.Start_qml_server()
+	// Cleanup when closing
+	defer qml_server.Cleanup()
+
+	fmt.Println("Starting QML-server-part")
+	qml_server.Start_qml_server(qmlLogger)
 
 	view.Show()
 
@@ -74,10 +63,10 @@ func main() {
 
 // *********************************************************************
 // Used by QML to verify that the QML-code was started from server and not from QML-editor
-//func checkIfServerIsOnline() bool {
+func checkIfServerIsOnline() bool {
 
-//	return qml_server.CheckIfServerIsOnline()
-//}
+	return qml_server.CheckIfServerIsOnline(qmlLogger)
+}
 
 // *********************************************************************
 // Forward a call from frontend to backend to generate a guid in string format
@@ -88,16 +77,16 @@ func main() {
 
 // *********************************************************************
 // Forward a call from frontend to backend to load stored data about Plugins
-func loadPluginModelFromServer() string {
+//func loadPluginModelFromServer() string {
 
-	// Send back response to frontend
-	return qml_server.LoadPluginModelFromServer()
-}
+// Send back response to frontend
+//	return qml_server.LoadPluginModelFromServer()
+//}
 
 // *********************************************************************
 // Used by QML to load stored data about Domains
-func loadDomainModelFromServer() string {
+//func loadDomainModelFromServer() string {
 
-	// Send back response to frontend
-	return "qml_server.LoadDomainModelFromServer()"
-}
+// Send back response to frontend
+//	return qml_server.LoadDomainModelFromServer()
+//}

@@ -40,7 +40,7 @@ type workerList_struct struct {
 
 
 */
-var qmlServerObject *QmlServerObject_struct
+var QmlServerObject *QmlServerObject_struct
 
 var (
 	registerQmlGrpcServer *grpc.Server

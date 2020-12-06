@@ -39,7 +39,7 @@ func (qmlServerObject *QmlServerObject_struct) verifyConnectionTowardsBackendGrp
 			// Start up alive check regarding backend gRPC server
 			for {
 				// If client hasn't dialed Backend Server we can call backend
-				if qmlServerObject.dialedBackendGrpcServer == false {
+				if qmlServerObject.dialedBackendGrpcServer == true {
 					returnMessage, err := testInstructionBackendServerGrpcClient.AreYouAlive(ctx, &backend_server_grpc_api.EmptyParameter{})
 
 					if err != nil {
