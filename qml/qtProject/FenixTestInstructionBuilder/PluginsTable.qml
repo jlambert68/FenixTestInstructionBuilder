@@ -27,6 +27,12 @@ Item {
 
     //}
 
+    Component.onCompleted: {
+
+        popUpNoConnectionToBAckend2.open()
+        JServer.jsLoadPluginModelFromServer()
+        JServer.jsLoadDomainModelFromServer()
+    }
 
 
 
@@ -348,6 +354,7 @@ Item {
 
 
             switch(pluginsTableItem.newOrEditStr ) {
+
             case "New":
                 popUptestInstructionGuid.text = JServer.jsGenerateGuid()
                 popUptestInstructionName.text = ""
@@ -636,6 +643,7 @@ Item {
 
 
 
+
             Button {
                 id: popUptestInstructioSaveButton
                 text: "Save"
@@ -706,10 +714,95 @@ Item {
 
             }
 
+
+
+
         }
 
     }
-}
+
+
+    // PopUp that locks application when there is no connection to backend
+    Popup {
+        id: popUpNoConnectionToBAckend2
+        //x: 100
+        //y: pluginsTableView.y + pluginsTableView.height + 50
+        width: rootWindow.width - 10
+        height: rootWindow.height - 10
+        modal: true
+        focus: true
+        closePolicy: Popup.CloseOnEscape //| Popup.CloseOnPressOutsideParent
+        opacity: 0.7
+        anchors.centerIn: parent
+
+        exit: Transition {
+            NumberAnimation {
+                property: "opacity"
+                from: 1.0
+                to: 0.0
+                duration: 1200
+            }
+        }
+        enter: Transition {
+
+            NumberAnimation {
+                property: "opacity"
+                from: 0.0
+                to: 1.0
+                duration: 800
+            }
+        }
+
+        Label {
+            text: "No connection to backend"
+        }
+
+        Item {
+            id: timerItem
+            width: parent.width
+            height: parent.height
+
+            property double startTime: 0
+            property int secondsElapsed: 0
+
+            function restartCounter() {
+
+                timerItem.startTime = 0
+            }
+
+            function timeChanged() {
+                if (timerItem.startTime == 0) {
+                    timerItem.startTime = new Date().getTime(
+                                ) //returns the number of milliseconds since the epoch (1970-01-01T00:00:00Z);
+                }
+                var currentTime = new Date().getTime()
+                timerItem.secondsElapsed = (currentTime - startTime) / 1000
+            }
+
+            Timer {
+                id: elapsedTimer
+                interval: 1000
+                running: true
+                repeat: true
+                onTriggered: timerItem.timeChanged()
+            }
+
+            Text {
+                id: counterText
+                text: timerItem.secondsElapsed
+                color: 'steelblue';
+                font.pixelSize: 30;
+                anchors {
+                    horizontalCenter: parent.horizontalCenter
+                    verticalCenter: parent.verticalCenter;
+                }
+            }
+        }
+    }
+
+    }
+
+
 
 
 

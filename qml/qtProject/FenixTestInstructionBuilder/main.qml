@@ -1,10 +1,9 @@
-
 import QtQuick 2.12
 import QtQuick.Window 2.12
 import QtQuick 2.0
 import QtQuick.Controls 1.4
 import "jsFunctions.js" as JServer
-
+import QtQuick.Controls 1.4
 
 Window {
     visible: true
@@ -12,9 +11,6 @@ Window {
     height: 480
     title: qsTr("Hello World")
     id: rootWindow
-
-
-
 
     MainTable {
         id: rootTable
@@ -24,18 +20,18 @@ Window {
         property bool startedByGolang: false
         property bool checkHasBeenDone: false
 
-        Connections
-        {
+        Connections {
             target: QmlBridge
             onSendToQml: rootTable.startedByGolang = data
         }
-        Component.onCompleted:{
+//        Component.onCompleted: {
+//        }
 
-            JServer.jsLoadPluginModelFromServer();
-        }
 
     }
 }
+
+
 /*
 
     TableStuff {
@@ -97,5 +93,4 @@ Window {
         }
     }
     */
-
 
