@@ -52,7 +52,8 @@ func Start_qml_server(mylogger *logrus.Logger) {
 		dialedBackendGrpcServer:  false,
 		backendGrpcServerIsAlive: false,
 		//qmlBridge : qmlBridge,
-		logger: mylogger,
+		logger:                      mylogger,
+		OnlyForTest_SwitchOfBackend: "Off",
 	}
 
 	// Init logger

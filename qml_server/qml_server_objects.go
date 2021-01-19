@@ -11,9 +11,10 @@ import (
 )
 
 type QmlServerObject_struct struct {
-	logger                   *logrus.Logger
-	dialedBackendGrpcServer  bool
-	backendGrpcServerIsAlive bool
+	logger                      *logrus.Logger
+	dialedBackendGrpcServer     bool
+	backendGrpcServerIsAlive    bool
+	OnlyForTest_SwitchOfBackend string
 	//	qmlBridge                *QmlBridge
 	//workers []workerList_struct
 	//workerIdChannel chan qml_server_grpc_api.WorkerResult

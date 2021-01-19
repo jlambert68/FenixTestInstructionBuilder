@@ -29,7 +29,7 @@ Item {
 
     Component.onCompleted: {
 
-        popUpNoConnectionToBAckend2.open()
+        //popUpNoConnectionToBAckend2.open()
         JServer.jsLoadPluginModelFromServer()
         JServer.jsLoadDomainModelFromServer()
     }
@@ -721,7 +721,7 @@ Item {
 
     }
 
-
+    /*
     // PopUp that locks application when there is no connection to backend
     Popup {
         id: popUpNoConnectionToBAckend2
@@ -764,6 +764,7 @@ Item {
 
             property double startTime: 0
             property int secondsElapsed: 0
+            property bool myServerResponse: false
 
             function restartCounter() {
 
@@ -777,6 +778,12 @@ Item {
                 }
                 var currentTime = new Date().getTime()
                 timerItem.secondsElapsed = (currentTime - startTime) / 1000
+
+                if (secondsElapsed > 10) {
+                    myServerResponse = QmlBridge.checkIfServerIsOnline()
+                    console.log("QmlBridge.checkIfServerIsOnline(): " + myServerResponse)
+                    restartCounter()
+                }
             }
 
             Timer {
@@ -799,8 +806,9 @@ Item {
             }
         }
     }
+    */
 
-    }
+}
 
 
 

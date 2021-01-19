@@ -4,17 +4,41 @@ import (
 	"github.com/sirupsen/logrus"
 	"golang.org/x/net/context"
 	"jlambert/FenixInception3/FenixTestInstructionBuilder/grpc_api/backend_server_grpc_api"
+	"strconv"
 )
+
+var onlyForTest_SwitchOfBackend string = "Off"
 
 // *********************************************************************
 // Used by QML to verify that the QML-code was started from server and not from QML-editor
 func CheckIfServerIsOnline(qmlLogger *logrus.Logger) bool {
 
+	var returnMessage bool
+
 	qmlLogger.WithFields(logrus.Fields{
 		"ID": "a2bd8237-97f9-4c34-b057-1c64bf61be4c",
 	}).Debug("Incoming call from QML-GUI to 'CheckIfServerIsOnline()'")
 
-	return true
+	if qml_qGRPC_bridges_CanStart == true {
+
+		switch onlyForTest_SwitchOfBackend {
+		case "On":
+			returnMessage = true
+		case "Off":
+			returnMessage = false
+		default:
+			returnMessage = false
+		}
+
+	} else {
+		returnMessage = false
+	}
+
+	qmlLogger.WithFields(logrus.Fields{
+		"ID": "5a5d8452-a927-490e-8764-dd20fbd57605",
+	}).Debug("Will answer: " + strconv.FormatBool(returnMessage))
+
+	return returnMessage
 }
 
 // *********************************************************************
