@@ -15,7 +15,8 @@ Window {
     id: rootWindow
 
     Component.onCompleted: {
-        popUpNoConnectionToBackendMain.open()
+        //popUpNoConnectionToBackendMain.open()
+        JServer.jsCheckIfStartedByGolang()
     }
 
     MainTable {
@@ -84,7 +85,7 @@ Window {
         }
 
         Item {
-            id: timerItem
+            id: timerItemForBackendCheck
             width: parent.width
             height: parent.height
 
@@ -92,26 +93,26 @@ Window {
             property double startTime: 0
             property int secondsElapsed: 0
             property bool myServerResponse: false
+/*
+            function restartCounter(doCheckOfBackend) {
 
-            function restartCounter() {
-
-                timerItem.startTime = 0
+                timerItemForBackendCheck.startTime = 0
             }
 
             function timeChanged() {
-                if (timerItem.startTime == 0) {
-                    timerItem.startTime = new Date().getTime(
+                if (timerItemForBackendCheck.startTime == 0) {
+                    timerItemForBackendCheck.startTime = new Date().getTime(
                                 ) //returns the number of milliseconds since the epoch (1970-01-01T00:00:00Z);
                 }
                 var currentTime = new Date().getTime()
-                timerItem.secondsElapsed = (currentTime - startTime) / 1000
+                timerItemForBackendCheck.secondsElapsed = (currentTime - startTime) / 1000
 
-                if (secondsElapsed > 5) {
-                    myServerResponse = QmlBridge.checkIfServerIsOnline()
-                    console.log("QmlBridge.checkIfServerIsOnline(): " + myServerResponse)
+                if ((timerItemForBackendCheck.secondsElapsed > 1) || (doCheckOfBackend == true)){
+                    timerItemForBackendCheck.myServerResponse = QmlBridge.checkIfServerIsOnline()
+                    console.log("QmlBridge.checkIfServerIsOnline(): " + timerItemForBackendCheck.myServerResponse)
                     restartCounter()
 
-                    if (myServerResponse == true) {
+                    if (timerItemForBackendCheckmyServerResponse == true) {
                         popUpNoConnectionToBackendMain.close()
                         rootTable.backendIsAlive = true
                     } else {
@@ -121,17 +122,19 @@ Window {
                 }
             }
 
+            */
+
             Timer {
                 id: elapsedTimer
                 interval: 1000
                 running: true
                 repeat: true
-                onTriggered: timerItem.timeChanged()
+                onTriggered: JServer.jsBackenTimerTimeChanged(false)
             }
 
             Text {
                 id: counterText
-                text: timerItem.secondsElapsed
+                text: timerItemForBackendCheck.secondsElapsed
                 color: 'steelblue';
                 font.pixelSize: 30;
                 anchors {

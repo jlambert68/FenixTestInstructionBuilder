@@ -53,6 +53,7 @@ func BackendServer_main() {
 	testInstructionBackendObject.InitGrpcServer()
 
 	// Register at QML Server
+	// TODO Detta ska inte göras. Denna komponent ska vara passiv
 	testInstructionBackendObject.SendMQmlServerIpAndPortForBackendServer()
 
 	c := make(chan os.Signal, 2)

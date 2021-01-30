@@ -1,22 +1,53 @@
 // Javascript-functions for calling Golang
 // All functions can be executed in a mocked version for use when started from QT-designer
 
+
 // *********************************************************************************
-// Check if Golang-server exist if not then force use Mock-data
-function jsCheckIfServerIsOnline() {
+// Check if GUI was started by the Golang-server. If not the force use Mock-data
+function jsCheckIfStartedByGolang() {
     var serverResponse = false;
+
+
 
     //Only do this test once
     if (rootTable.checkHasBeenDone === false) {
         rootTable.checkHasBeenDone = true
 
-        serverResponse = QmlBridge.checkIfServerIsOnline();
+        serverResponse = QmlBridge.checkIfStartedByGolang();
+        console.log("*** QmlBridge.checkIfStartedByGolang(); ***: " +serverResponse)
         if (serverResponse === true) {
             rootTable.startedByGolang = true
         } else {
             rootTable.startedByGolang = false
         }
     }
+
+
+
+}
+
+// *********************************************************************************
+// Check if Golang-server exist if not then force use Mock-data
+function jsCheckIfServerIsOnline() {
+    var serverResponse = false;
+
+    // Seccure that test has been done
+    jsCheckIfStartedByGolang()
+        serverResponse = QmlBridge.checkIfServerIsOnline();
+        console.log("*** QmlBridge.checkIfServerIsOnline(); ***: " +serverResponse)
+        if (serverResponse === true) {
+            rootTable.startedByGolang = true
+        } else {
+            rootTable.startedByGolang = false
+        }
+    }
+
+    // Allways Make a check if backend is awake
+    jsBackenTimerTimeChanged(true)
+
+
+
+
 
 }
 
@@ -137,3 +168,44 @@ function jsLoadDomainModelFromServer() {
                                                });
 }
 
+
+
+// *********************************************************************************
+// Called by timer to check if backend is answering calls
+
+//function restartCounter(doCheckOfBackend) {
+
+//    timerItemForBackendCheck.startTime = 0
+//}
+
+function jsBackenTimerTimeChanged(doCheckOfBackend) {
+    if (rootTable.startedByGolang === true) {
+        if (timerItemForBackendCheck.startTime == 0) {
+            timerItemForBackendCheck.startTime = new Date().getTime(
+                        ) //returns the number of milliseconds since the epoch (1970-01-01T00:00:00Z);
+        }
+        var currentTime = new Date().getTime()
+        timerItemForBackendCheck.secondsElapsed = (currentTime - timerItemForBackendCheck.startTime) / 1000
+
+        if ((timerItemForBackendCheck.secondsElapsed > 1) || (doCheckOfBackend === true)){
+            timerItemForBackendCheck.myServerResponse = QmlBridge.checkIfServerIsOnline()
+            console.log("QmlBridge.checkIfServerIsOnline(): " + timerItemForBackendCheck.myServerResponse)
+            timerItemForBackendCheck.startTime = 0 //restartCounter()
+
+            if (timerItemForBackendCheck.myServerResponse === true) {
+                popUpNoConnectionToBackendMain.close()
+                rootTable.backendIsAlive = true
+
+            } else {
+                if (rootTable.startedByGolang === true) {
+                    popUpNoConnectionToBackendMain.open()
+                    rootTable.backendIsAlive = false
+
+                } else {
+                    rootTable.backendIsAlive = false
+
+                }
+            }
+        }
+    }
+}

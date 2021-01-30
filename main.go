@@ -15,6 +15,7 @@ type QmlBridge struct {
 
 	//	_ func(data bool)          `signal:"sendToQml"`
 	//	_ func(data string) string `slot:"sendToGo"`
+	_ func() bool   `slot:"checkIfStartedByGolang"`
 	_ func() bool   `slot:"checkIfServerIsOnline"`
 	_ func() string `slot:"generateGuid"`
 	_ func() string `slot:"loadPluginModelFromServer"`
@@ -33,6 +34,12 @@ func main() {
 	// Init logger
 	qmlLogger = InitLogger("")
 
+	// Cleanup when closing
+	defer qml_server.Cleanup()
+
+	fmt.Println("Starting QML-server-part")
+	qml_server.Start_qml_server(qmlLogger)
+
 	// Set QML parts
 	core.QCoreApplication_SetAttribute(core.Qt__AA_EnableHighDpiScaling, true)
 
@@ -43,6 +50,7 @@ func main() {
 
 	var qmlBridge = NewQmlBridge(nil)
 	qmlBridge.ConnectGenerateGuid(qml_server.GenerateGuid)
+	qmlBridge.ConnectCheckIfStartedByGolang(checkIfStartedByGolang)
 	qmlBridge.ConnectCheckIfServerIsOnline(checkIfServerIsOnline)
 	qmlBridge.ConnectLoadPluginModelFromServer(qml_server.LoadPluginModelFromServer)
 	qmlBridge.ConnectLoadDomainModelFromServer(qml_server.LoadDomainModelFromServer)
@@ -50,15 +58,16 @@ func main() {
 	view.RootContext().SetContextProperty("QmlBridge", qmlBridge)
 	view.SetSource(core.NewQUrl3("qrc:/qml/qtProject/FenixTestInstructionBuilder/main.qml", 0))
 
-	// Cleanup when closing
-	defer qml_server.Cleanup()
-
-	fmt.Println("Starting QML-server-part")
-	qml_server.Start_qml_server(qmlLogger)
-
 	view.Show()
 
 	gui.QGuiApplication_Exec()
+}
+
+// *********************************************************************
+// Used by QML to verify that the QML-code was started from server and not from QML-editor
+func checkIfStartedByGolang() bool {
+
+	return qml_server.CheckIfStartedByGolang(qmlLogger)
 }
 
 // *********************************************************************

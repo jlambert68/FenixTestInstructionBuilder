@@ -101,7 +101,7 @@ func (s *TestInstructionBackendServer) LoadPluginModelFromServer(ctx context.Con
 
 	returnMessage = &backend_server_grpc_api.PluginQmlModelFromServerResponse{
 		JsonStringForPluginQmlModel: jsonToSendAsString,
-		Acknack:                     false,
+		Acknack:                     true,
 		Comments:                    "",
 		XXX_NoUnkeyedLiteral:        struct{}{},
 		XXX_unrecognized:            nil,
@@ -169,7 +169,7 @@ func (s *TestInstructionBackendServer) LoadDomainModelFromServer(ctx context.Con
 
 	returnMessage = &backend_server_grpc_api.DomainQmlModelFromServerResponse{
 		JsonStringForDomainQmlModel: jsonToSendAsString,
-		Acknack:                     false,
+		Acknack:                     true,
 		Comments:                    "",
 		XXX_NoUnkeyedLiteral:        struct{}{},
 		XXX_unrecognized:            nil,

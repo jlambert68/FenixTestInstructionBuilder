@@ -7,7 +7,22 @@ import (
 	"strconv"
 )
 
-var onlyForTest_SwitchOfBackend string = "Off"
+var onlyForTest_SwitchOfBackend string = "On"
+
+// *********************************************************************
+// Used by QML to verify that the QML-code was started from server and not from QML-editor
+func CheckIfStartedByGolang(qmlLogger *logrus.Logger) bool {
+
+	var returnMessage bool
+
+	qmlLogger.WithFields(logrus.Fields{
+		"ID": "5d2f49f0-fef2-4c26-ba17-e53f318ab24d",
+	}).Debug("Incoming call from QML-GUI to 'CheckIfStartedByGolang()'")
+
+	returnMessage = true
+
+	return returnMessage
+}
 
 // *********************************************************************
 // Used by QML to verify that the QML-code was started from server and not from QML-editor
