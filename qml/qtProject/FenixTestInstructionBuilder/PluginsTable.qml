@@ -30,8 +30,8 @@ Item {
     Component.onCompleted: {
 
         //popUpNoConnectionToBAckend2.open()
-        JServer.jsLoadPluginModelFromServer()
-        JServer.jsLoadDomainModelFromServer()
+        //JServer.jsLoadPluginModelFromServer()
+        //JServer.jsLoadDomainModelFromServer()
     }
 
 

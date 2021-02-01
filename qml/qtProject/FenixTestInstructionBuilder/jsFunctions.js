@@ -40,16 +40,16 @@ function jsCheckIfServerIsOnline() {
         } else {
             rootTable.startedByGolang = false
         }
-    }
+
 
     // Allways Make a check if backend is awake
     jsBackenTimerTimeChanged(true)
 
 
-
-
-
 }
+
+
+
 
 // *********************************************************************************
 // Generate a GUID

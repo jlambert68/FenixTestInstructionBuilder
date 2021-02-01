@@ -35,9 +35,11 @@ Window {
             target: QmlBridge
             onSendToQml: rootTable.startedByGolang = data
         }
-                Component.onCompleted: {
-                    //popUpNoConnectionToBackendMain.open()
-                }
+        Component.onCompleted: {
+            //popUpNoConnectionToBackendMain.open()
+            //console.log("Qt.resolvedUrl('.')" + Qt.resolvedUrl("."))
+
+        }
 
     }
 
@@ -93,7 +95,7 @@ Window {
             property double startTime: 0
             property int secondsElapsed: 0
             property bool myServerResponse: false
-/*
+            /*
             function restartCounter(doCheckOfBackend) {
 
                 timerItemForBackendCheck.startTime = 0
