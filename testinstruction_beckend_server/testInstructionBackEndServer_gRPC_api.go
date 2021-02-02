@@ -184,3 +184,49 @@ func (s *TestInstructionBackendServer) LoadDomainModelFromServer(ctx context.Con
 	return returnMessage, nil
 
 }
+
+// *********************************************************************
+// Save data about Plugins that was sent from GUI, via QML-server
+func (s *TestInstructionBackendServer) SavePluginModelToServer(ctx context.Context, pluginQmlModelToServerRequest *backend_server_grpc_api.PluginQmlModelToServerRequest) (*backend_server_grpc_api.AckNackResponse, error) {
+
+	testInstructionBackendObject.logger.WithFields(logrus.Fields{
+		"id": "761ab856-6c7f-41ef-b951-534ecfee3b58",
+	}).Debug("Incoming 'SavePluginModelToServer'")
+
+	var returnMessage *backend_server_grpc_api.AckNackResponse
+
+	returnMessage = &backend_server_grpc_api.AckNackResponse{
+		Acknack:  true,
+		Comments: "",
+	}
+
+	testInstructionBackendObject.logger.WithFields(logrus.Fields{
+		"id":         "5ffb910b-ab1f-4b1a-b488-1e01d3ab834d",
+		"returnGuid": returnMessage,
+	}).Debug("Leaving 'SavePluginModelToServer'")
+
+	return returnMessage, nil
+
+}
+
+// *********************************************************************
+// Save data about Domains that was sent from GUI, via QML-server
+func (s *TestInstructionBackendServer) SaveDomainModelToServer(ctx context.Context, domainQmlModelToServerRequest *backend_server_grpc_api.DomainQmlModelToServerRequest) (*backend_server_grpc_api.AckNackResponse, error) {
+	testInstructionBackendObject.logger.WithFields(logrus.Fields{
+		"id": "2d0db33f-02a8-463f-94b8-6e7047ff664f",
+	}).Debug("Incoming 'SaveDomainModelToServer'")
+
+	var returnMessage *backend_server_grpc_api.AckNackResponse
+
+	returnMessage = &backend_server_grpc_api.AckNackResponse{
+		Acknack:  true,
+		Comments: "",
+	}
+
+	testInstructionBackendObject.logger.WithFields(logrus.Fields{
+		"id":         "d172be33-f752-4af7-a5cf-3f5ab58eb493",
+		"returnGuid": returnMessage,
+	}).Debug("Leaving 'SaveDomainModelToServer'")
+
+	return returnMessage, nil
+}

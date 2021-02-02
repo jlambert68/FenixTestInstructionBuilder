@@ -1,6 +1,10 @@
 syntax = "proto3";
 package qml_server_grpc_api;
 
+// Switch row when to compile proto-file
+//import "grpc_common.proto";
+import "../common_grpc_api/grpc_common.proto";
+
 //~/Programs/protoc-3.10.1-linux-x86_64/bin/protoc  -I qml_server_grpc_api --go_out=plugins=grpc:qml_server_grpc_api qml_server_grpc_api/qml_grpc_server.proto
 
 // Parameter used for Empty inputs
@@ -18,11 +22,11 @@ message AckNackResponse {
 service QmlGrpcServices {
 
     // Main coordinator sends task to worker with this service
-    rpc TestInstructionBackendServerIPandPort (BackendServerInformation) returns (AckNackResponse) {
+    rpc TestInstructionBackendServerIPandPort (BackendServerInformation) returns (grpc_common.AckNackResponse) {
     }
 
     // OnlyForTestSwitchOfBacken(
-    rpc OnlyForTestSwitchOfBacken (SwitchOfBackendRequest) returns (AckNackResponse) {
+    rpc OnlyForTestSwitchOfBacken (SwitchOfBackendRequest) returns (grpc_common.AckNackResponse) {
     }
 
 
