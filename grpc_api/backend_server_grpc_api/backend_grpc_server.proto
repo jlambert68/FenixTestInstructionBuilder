@@ -3,19 +3,19 @@ package backend_server_grpc_api;
 
 // Switch row when to compile proto-file
 //import "common_grpc_api.proto";
-import "../common_grpc_api/common_grpc_api.proto";
+//import "../common_grpc_api/common_grpc_api.proto";
 
 //~/Programs/protoc-3.10.1-linux-x86_64/bin/protoc  -I ../grpc_api/backend_server_grpc_api --go_out=../grpc_api/backend_server_grpc_api/plugins=grpc:../grpc_api/backend_server_grpc_api ../grpc_api/backend_server_grpc_api/backend_grpc_server.proto
 
 // Parameter used for Empty inputs
-//message EmptyParameter {
-//}
+message EmptyParameter {
+}
 
 // Ack/Nack- Response message with comment
-//message AckNackResponse {
-//    bool acknack = 1; // True=Ack, False=Nack
-//    string comments = 2; //Comments if needed
-//}
+message AckNackResponse {
+    bool acknack = 1; // True=Ack, False=Nack
+    string comments = 2; //Comments if needed
+}
 
 // The Client register service definition.
 // ***********************
@@ -23,22 +23,22 @@ service TestInstructionBackendGrpcServices {
 
 
     //QML Server can check if Backend server is still alive with this service
-    rpc AreYouAlive (common_grpc_api.EmptyParameter) returns (common_grpc_api.AckNackResponse) {
+    rpc AreYouAlive (EmptyParameter) returns (AckNackResponse) {
     }
 
     // ** QML Server forwards this questions to Backend Server **
     // Generates an new GUID, used for identification
-    rpc GenerateGuid(common_grpc_api.EmptyParameter) returns (GuidResponse) {
+    rpc GenerateGuid(EmptyParameter) returns (GuidResponse) {
     }
 
     // ** QML Server forwards this questions to Backend Server **
     // Loads data, defined by MessageTypeToAndFromBackend,  from the server
-    rpc LoadFromServer (common_grpc_api.QMLModelTypeToAndFromBackendMessage) returns (QmlModeToLoadlFromServerResponse) {
+    rpc LoadFromServer (QMLModelTypeToAndFromBackendMessage) returns (QmlModeToLoadlFromServerResponse) {
     }
 
     // ** QML Server forwards this questions to Backend Server **
     // Save data, defined by MessageTypeToAndFromBackend, at the server
-    rpc SaveToServer(QmlModelToSaveAtServerRequest) returns (common_grpc_api.AckNackResponse) {
+    rpc SaveToServer(QmlModelToSaveAtServerRequest) returns (AckNackResponse) {
     }
 
 
@@ -54,7 +54,7 @@ message GuidResponse {
 // Json string message with QML model that will be load from Server
 message QmlModeToLoadlFromServerResponse {
     string jsonStringForPluginQmlModel = 1; //json
-    common_grpc_api.QMLModelTypeToAndFromBackend qmlModelTypeToAndFromBackend = 2;// Type od message
+    QMLModelTypeToAndFromBackend qmlModelTypeToAndFromBackend = 2;// Type od message
     bool acknack = 3; // True=Ack, False=Nack
     string comments = 4; //Comments if needed
 }
@@ -63,5 +63,15 @@ message QmlModeToLoadlFromServerResponse {
 // Json string message with QML model that will be saved at Server
 message QmlModelToSaveAtServerRequest {
     string jsonStringForPluginQmlModel = 1; //json
-    common_grpc_api.QMLModelTypeToAndFromBackend qmlModelTypeToAndFromBackend = 2; //
+    QMLModelTypeToAndFromBackend qmlModelTypeToAndFromBackend = 2; //
+}
+
+enum QMLModelTypeToAndFromBackend {
+    DomainModel = 0; //
+    PluginModel = 1;
+}
+
+// Message defining QMLModelTypeToAndFromBackend used
+message QMLModelTypeToAndFromBackendMessage {
+    QMLModelTypeToAndFromBackend qMLModelTypeToAndFromBackendType = 1;
 }

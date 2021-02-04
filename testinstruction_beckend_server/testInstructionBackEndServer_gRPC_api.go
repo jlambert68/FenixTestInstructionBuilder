@@ -6,11 +6,10 @@ import (
 	"github.com/sirupsen/logrus"
 	"golang.org/x/net/context"
 	"jlambert/FenixInception3/FenixTestInstructionBuilder/grpc_api/backend_server_grpc_api"
-	"jlambert/FenixInception3/FenixTestInstructionBuilder/grpc_api/common_grpc_api"
 )
 
 // Used for checking if Backen Server is alive
-func (s *TestInstructionBackendServer) AreYouAlive(ctx context.Context, emptyParameter *common_grpc_api.EmptyParameter) (*common_grpc_api.AckNackResponse, error) {
+func (s *TestInstructionBackendServer) AreYouAlive(ctx context.Context, emptyParameter *backend_server_grpc_api.EmptyParameter) (*backend_server_grpc_api.AckNackResponse, error) {
 
 	testInstructionBackendObject.logger.WithFields(logrus.Fields{}).Debug("Incoming: 'AreYouAlive'")
 
@@ -18,12 +17,12 @@ func (s *TestInstructionBackendServer) AreYouAlive(ctx context.Context, emptyPar
 	testInstructionBackendObject.qmlServerHasConnected = true
 
 	testInstructionBackendObject.logger.WithFields(logrus.Fields{}).Debug("Leaving 'AreYouAlive'")
-	return &common_grpc_api.AckNackResponse{Acknack: true, Comments: "I'am alive, from " + testInstructionBackendObject.uuid}, nil
+	return &backend_server_grpc_api.AckNackResponse{Acknack: true, Comments: "I'am alive, from " + testInstructionBackendObject.uuid}, nil
 }
 
 // *********************************************************************
 // Generates a guid in string format to be sent front end
-func (s *TestInstructionBackendServer) GenerateGuid(ctx context.Context, emptyParameter *common_grpc_api.EmptyParameter) (*backend_server_grpc_api.GuidResponse, error) {
+func (s *TestInstructionBackendServer) GenerateGuid(ctx context.Context, emptyParameter *backend_server_grpc_api.EmptyParameter) (*backend_server_grpc_api.GuidResponse, error) {
 
 	testInstructionBackendObject.logger.WithFields(logrus.Fields{
 		"id": "85799f31-71b1-4c0e-9693-81fedd56bd41",
@@ -52,7 +51,7 @@ func (s *TestInstructionBackendServer) GenerateGuid(ctx context.Context, emptyPa
 
 // *********************************************************************
 // Load stored data of type found in ingoing message and send back towards frontend, via QML-server
-func (s *TestInstructionBackendServer) LoadFromServer(ctx context.Context, qmlModelTypeToAndFromBackendMessage *common_grpc_api.QMLModelTypeToAndFromBackendMessage) (*backend_server_grpc_api.QmlModeToLoadlFromServerResponse, error) {
+func (s *TestInstructionBackendServer) LoadFromServer(ctx context.Context, qmlModelTypeToAndFromBackendMessage *backend_server_grpc_api.QMLModelTypeToAndFromBackendMessage) (*backend_server_grpc_api.QmlModeToLoadlFromServerResponse, error) {
 
 	testInstructionBackendObject.logger.WithFields(logrus.Fields{
 		"id":                               "649a3945-d24d-42fb-b8b3-c01bf16c552a",
@@ -77,7 +76,7 @@ func (s *TestInstructionBackendServer) LoadFromServer(ctx context.Context, qmlMo
 	var listElementData []ListElementStruct
 
 	switch qmlModelTypeToAndFromBackendMessage.QMLModelTypeToAndFromBackendType {
-	case common_grpc_api.QMLModelTypeToAndFromBackend_PluginModel:
+	case backend_server_grpc_api.QMLModelTypeToAndFromBackend_PluginModel:
 
 		// Append First Mock-ELement
 		listElement1 := &ListElementStruct{
@@ -99,7 +98,7 @@ func (s *TestInstructionBackendServer) LoadFromServer(ctx context.Context, qmlMo
 		}
 		listElementData = append(listElementData, *listElement2)
 
-	case common_grpc_api.QMLModelTypeToAndFromBackend_DomainModel:
+	case backend_server_grpc_api.QMLModelTypeToAndFromBackend_DomainModel:
 		// Append First Mock-ELement
 		listElement1 := &ListElementStruct{
 			Name:        "Custody Cash",
@@ -158,15 +157,15 @@ func (s *TestInstructionBackendServer) LoadFromServer(ctx context.Context, qmlMo
 
 // *********************************************************************
 // Save data, of type found in in data message, that was sent from GUI, via QML-server
-func (s *TestInstructionBackendServer) SaveToServer(ctx context.Context, pluginQmlModelToServerRequest *backend_server_grpc_api.QmlModelToSaveAtServerRequest) (*common_grpc_api.AckNackResponse, error) {
+func (s *TestInstructionBackendServer) SaveToServer(ctx context.Context, pluginQmlModelToServerRequest *backend_server_grpc_api.QmlModelToSaveAtServerRequest) (*backend_server_grpc_api.AckNackResponse, error) {
 
 	testInstructionBackendObject.logger.WithFields(logrus.Fields{
 		"id": "761ab856-6c7f-41ef-b951-534ecfee3b58",
 	}).Debug("Incoming 'SavePluginModelToServer'")
 
-	var returnMessage *common_grpc_api.AckNackResponse
+	var returnMessage *backend_server_grpc_api.AckNackResponse
 
-	returnMessage = &common_grpc_api.AckNackResponse{
+	returnMessage = &backend_server_grpc_api.AckNackResponse{
 		Acknack:  true,
 		Comments: "",
 	}

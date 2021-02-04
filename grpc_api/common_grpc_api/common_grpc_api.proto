@@ -5,6 +5,7 @@ enum CurrentVersionEnum {
     VERSION_0_1_0 = 0; // Current version
 }
 
+/*
 enum QMLModelTypeToAndFromBackend {
     DomainModel = 0; //
     PluginModel = 1;
@@ -14,7 +15,7 @@ enum QMLModelTypeToAndFromBackend {
 message QMLModelTypeToAndFromBackendMessage {
     QMLModelTypeToAndFromBackend qMLModelTypeToAndFromBackendType = 1;
 }
-
+*/
 
 // Parameter used for Empty inputs
 message EmptyParameter {
