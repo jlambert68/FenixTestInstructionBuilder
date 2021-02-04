@@ -1,12 +1,12 @@
 syntax = "proto3";
-package grpc_common;
+package common_grpc_api;
 
 enum CurrentVersionEnum {
     VERSION_0_1_0 = 0; // Current version
 }
 
 enum QMLModelTypeToAndFromBackend {
-    DomainMode = 0; //
+    DomainModel = 0; //
     PluginModel = 1;
 }
 

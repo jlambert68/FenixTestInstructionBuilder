@@ -6,10 +6,11 @@ import (
 	"github.com/sirupsen/logrus"
 	"golang.org/x/net/context"
 	"jlambert/FenixInception3/FenixTestInstructionBuilder/grpc_api/backend_server_grpc_api"
+	"jlambert/FenixInception3/FenixTestInstructionBuilder/grpc_api/common_grpc_api"
 )
 
 // Used for checking if Backen Server is alive
-func (s *TestInstructionBackendServer) AreYouAlive(ctx context.Context, emptyParameter *backend_server_grpc_api.EmptyParameter) (*backend_server_grpc_api.AckNackResponse, error) {
+func (s *TestInstructionBackendServer) AreYouAlive(ctx context.Context, emptyParameter *common_grpc_api.EmptyParameter) (*common_grpc_api.AckNackResponse, error) {
 
 	testInstructionBackendObject.logger.WithFields(logrus.Fields{}).Debug("Incoming: 'AreYouAlive'")
 
@@ -17,12 +18,12 @@ func (s *TestInstructionBackendServer) AreYouAlive(ctx context.Context, emptyPar
 	testInstructionBackendObject.qmlServerHasConnected = true
 
 	testInstructionBackendObject.logger.WithFields(logrus.Fields{}).Debug("Leaving 'AreYouAlive'")
-	return &backend_server_grpc_api.AckNackResponse{Acknack: true, Comments: "I'am alive, from " + testInstructionBackendObject.uuid}, nil
+	return &common_grpc_api.AckNackResponse{Acknack: true, Comments: "I'am alive, from " + testInstructionBackendObject.uuid}, nil
 }
 
 // *********************************************************************
 // Generates a guid in string format to be sent front end
-func (s *TestInstructionBackendServer) GenerateGuid(ctx context.Context, emptyParameter *backend_server_grpc_api.EmptyParameter) (*backend_server_grpc_api.GuidResponse, error) {
+func (s *TestInstructionBackendServer) GenerateGuid(ctx context.Context, emptyParameter *common_grpc_api.EmptyParameter) (*backend_server_grpc_api.GuidResponse, error) {
 
 	testInstructionBackendObject.logger.WithFields(logrus.Fields{
 		"id": "85799f31-71b1-4c0e-9693-81fedd56bd41",
@@ -50,14 +51,15 @@ func (s *TestInstructionBackendServer) GenerateGuid(ctx context.Context, emptyPa
 }
 
 // *********************************************************************
-// Load stored data about Plugins and send towards frontend, via QML-server
-func (s *TestInstructionBackendServer) LoadPluginModelFromServer(ctx context.Context, emptyParameter *backend_server_grpc_api.EmptyParameter) (*backend_server_grpc_api.PluginQmlModelFromServerResponse, error) {
+// Load stored data of type found in ingoing message and send back towards frontend, via QML-server
+func (s *TestInstructionBackendServer) LoadFromServer(ctx context.Context, qmlModelTypeToAndFromBackendMessage *common_grpc_api.QMLModelTypeToAndFromBackendMessage) (*backend_server_grpc_api.QmlModeToLoadlFromServerResponse, error) {
 
 	testInstructionBackendObject.logger.WithFields(logrus.Fields{
-		"id": "649a3945-d24d-42fb-b8b3-c01bf16c552a",
-	}).Debug("Incoming 'LoadPluginModelFromServer'")
+		"id":                               "649a3945-d24d-42fb-b8b3-c01bf16c552a",
+		"QMLModelTypeToAndFromBackendType": qmlModelTypeToAndFromBackendMessage.QMLModelTypeToAndFromBackendType,
+	}).Debug("Incoming 'LoadFromServer'")
 
-	var returnMessage *backend_server_grpc_api.PluginQmlModelFromServerResponse
+	var returnMessage *backend_server_grpc_api.QmlModeToLoadlFromServerResponse
 
 	type ListElementStruct struct {
 		Name        string `json:"name"`
@@ -74,38 +76,75 @@ func (s *TestInstructionBackendServer) LoadPluginModelFromServer(ctx context.Con
 	var dataForPlugin dataForPlugInStruct
 	var listElementData []ListElementStruct
 
-	// Append First Mock-ELement
-	listElement1 := &ListElementStruct{
-		Name:        "Send UTR",
-		GUID:        "2243085a-feee-4ae7-8ccf-03f69c0704a4",
-		ReadyForUse: true,
-		Activated:   true,
-		Description: "Sends UTRs via MQ towards Custody Cash",
-	}
-	listElementData = append(listElementData, *listElement1)
+	switch qmlModelTypeToAndFromBackendMessage.QMLModelTypeToAndFromBackendType {
+	case common_grpc_api.QMLModelTypeToAndFromBackend_PluginModel:
 
-	// Appned Second Mock-ELement
-	listElement2 := &ListElementStruct{
-		Name:        "Validate New Pacs008",
-		GUID:        "d456499c-2ad1-4677-8e1d-909a7ecab560",
-		ReadyForUse: true,
-		Activated:   true,
-		Description: "Validates that a newly created Pacs008 has been sent to CMaaS",
+		// Append First Mock-ELement
+		listElement1 := &ListElementStruct{
+			Name:        "Send UTR",
+			GUID:        "2243085a-feee-4ae7-8ccf-03f69c0704a4",
+			ReadyForUse: true,
+			Activated:   true,
+			Description: "Sends UTRs via MQ towards Custody Cash",
+		}
+		listElementData = append(listElementData, *listElement1)
+
+		// Appned Second Mock-ELement
+		listElement2 := &ListElementStruct{
+			Name:        "Validate New Pacs008",
+			GUID:        "d456499c-2ad1-4677-8e1d-909a7ecab560",
+			ReadyForUse: true,
+			Activated:   true,
+			Description: "Validates that a newly created Pacs008 has been sent to CMaaS",
+		}
+		listElementData = append(listElementData, *listElement2)
+
+	case common_grpc_api.QMLModelTypeToAndFromBackend_DomainModel:
+		// Append First Mock-ELement
+		listElement1 := &ListElementStruct{
+			Name:        "Custody Cash",
+			GUID:        "2243085a-feee-4ae7-8ccf-03f69c0704a4",
+			ReadyForUse: true,
+			Activated:   true,
+			Description: "All test regarding Custody Cash",
+		}
+		listElementData = append(listElementData, *listElement1)
+
+		// Appned Second Mock-ELement
+		listElement2 := &ListElementStruct{
+			Name:        "Cusotdy Arrangement",
+			GUID:        "d456499c-2ad1-4677-8e1d-909a7ecab560",
+			ReadyForUse: false,
+			Activated:   false,
+			Description: "All tests regarding Custody Arrangement",
+		}
+		listElementData = append(listElementData, *listElement2)
+	default:
+		returnMessage = &backend_server_grpc_api.QmlModeToLoadlFromServerResponse{
+			JsonStringForPluginQmlModel:  "",
+			QmlModelTypeToAndFromBackend: qmlModelTypeToAndFromBackendMessage.QMLModelTypeToAndFromBackendType,
+			Acknack:                      false,
+			Comments:                     "Unknown QmlModelType",
+		}
+
+		testInstructionBackendObject.logger.WithFields(logrus.Fields{
+			"id":         "2fddd953-ce75-4d11-a04a-307c34ea49c7",
+			"returnGuid": returnMessage,
+		}).Debug("Unknown QmlModelType")
+
+		return returnMessage, nil
 	}
-	listElementData = append(listElementData, *listElement2)
 
 	dataForPlugin.ListElement = listElementData
 
 	jsonToSend, _ := json.MarshalIndent(dataForPlugin, "", " ")
 	jsonToSendAsString := string(jsonToSend)
 
-	returnMessage = &backend_server_grpc_api.PluginQmlModelFromServerResponse{
-		JsonStringForPluginQmlModel: jsonToSendAsString,
-		Acknack:                     true,
-		Comments:                    "",
-		XXX_NoUnkeyedLiteral:        struct{}{},
-		XXX_unrecognized:            nil,
-		XXX_sizecache:               0,
+	returnMessage = &backend_server_grpc_api.QmlModeToLoadlFromServerResponse{
+		JsonStringForPluginQmlModel:  jsonToSendAsString,
+		QmlModelTypeToAndFromBackend: qmlModelTypeToAndFromBackendMessage.QMLModelTypeToAndFromBackendType,
+		Acknack:                      true,
+		Comments:                     "",
 	}
 
 	testInstructionBackendObject.logger.WithFields(logrus.Fields{
@@ -118,84 +157,16 @@ func (s *TestInstructionBackendServer) LoadPluginModelFromServer(ctx context.Con
 }
 
 // *********************************************************************
-// Load stored data about Domains and send towards frontend, via QML-server
-func (s *TestInstructionBackendServer) LoadDomainModelFromServer(ctx context.Context, emptyParameter *backend_server_grpc_api.EmptyParameter) (*backend_server_grpc_api.DomainQmlModelFromServerResponse, error) {
-
-	testInstructionBackendObject.logger.WithFields(logrus.Fields{
-		"id": "739eb55d-967e-486e-a4a7-fbd530da5405",
-	}).Debug("Incoming 'LoadDomainModelFromServer'")
-
-	var returnMessage *backend_server_grpc_api.DomainQmlModelFromServerResponse
-
-	type ListElementStruct struct {
-		Name        string `json:"name"`
-		GUID        string `json:"guid"`
-		ReadyForUse bool   `json:"readyForUse"`
-		Activated   bool   `json:"activated"`
-		Description string `json:"description"`
-	}
-
-	type dataForDomainStruct struct {
-		ListElement []ListElementStruct `json:"ListElement"`
-	}
-
-	var dataForDomain dataForDomainStruct
-	var listElementData []ListElementStruct
-
-	// Append First Mock-ELement
-	listElement1 := &ListElementStruct{
-		Name:        "Custody Cash",
-		GUID:        "2243085a-feee-4ae7-8ccf-03f69c0704a4",
-		ReadyForUse: true,
-		Activated:   true,
-		Description: "All test regarding Custody Cash",
-	}
-	listElementData = append(listElementData, *listElement1)
-
-	// Appned Second Mock-ELement
-	listElement2 := &ListElementStruct{
-		Name:        "Cusotdy Arrangement",
-		GUID:        "d456499c-2ad1-4677-8e1d-909a7ecab560",
-		ReadyForUse: false,
-		Activated:   false,
-		Description: "All tests regarding Custody Arrangement",
-	}
-	listElementData = append(listElementData, *listElement2)
-
-	dataForDomain.ListElement = listElementData
-
-	jsonToSend, _ := json.MarshalIndent(dataForDomain, "", " ")
-	jsonToSendAsString := string(jsonToSend)
-
-	returnMessage = &backend_server_grpc_api.DomainQmlModelFromServerResponse{
-		JsonStringForDomainQmlModel: jsonToSendAsString,
-		Acknack:                     true,
-		Comments:                    "",
-		XXX_NoUnkeyedLiteral:        struct{}{},
-		XXX_unrecognized:            nil,
-		XXX_sizecache:               0,
-	}
-
-	testInstructionBackendObject.logger.WithFields(logrus.Fields{
-		"id":         "b4f300fc-5dca-4611-9d6b-6f46c55900c2",
-		"returnGuid": returnMessage,
-	}).Debug("Leaveing 'LoadDomainModelFromServer'")
-
-	return returnMessage, nil
-
-}
-
-// *********************************************************************
-// Save data about Plugins that was sent from GUI, via QML-server
-func (s *TestInstructionBackendServer) SavePluginModelToServer(ctx context.Context, pluginQmlModelToServerRequest *backend_server_grpc_api.PluginQmlModelToServerRequest) (*backend_server_grpc_api.AckNackResponse, error) {
+// Save data, of type found in in data message, that was sent from GUI, via QML-server
+func (s *TestInstructionBackendServer) SaveToServer(ctx context.Context, pluginQmlModelToServerRequest *backend_server_grpc_api.QmlModelToSaveAtServerRequest) (*common_grpc_api.AckNackResponse, error) {
 
 	testInstructionBackendObject.logger.WithFields(logrus.Fields{
 		"id": "761ab856-6c7f-41ef-b951-534ecfee3b58",
 	}).Debug("Incoming 'SavePluginModelToServer'")
 
-	var returnMessage *backend_server_grpc_api.AckNackResponse
+	var returnMessage *common_grpc_api.AckNackResponse
 
-	returnMessage = &backend_server_grpc_api.AckNackResponse{
+	returnMessage = &common_grpc_api.AckNackResponse{
 		Acknack:  true,
 		Comments: "",
 	}
@@ -207,26 +178,4 @@ func (s *TestInstructionBackendServer) SavePluginModelToServer(ctx context.Conte
 
 	return returnMessage, nil
 
-}
-
-// *********************************************************************
-// Save data about Domains that was sent from GUI, via QML-server
-func (s *TestInstructionBackendServer) SaveDomainModelToServer(ctx context.Context, domainQmlModelToServerRequest *backend_server_grpc_api.DomainQmlModelToServerRequest) (*backend_server_grpc_api.AckNackResponse, error) {
-	testInstructionBackendObject.logger.WithFields(logrus.Fields{
-		"id": "2d0db33f-02a8-463f-94b8-6e7047ff664f",
-	}).Debug("Incoming 'SaveDomainModelToServer'")
-
-	var returnMessage *backend_server_grpc_api.AckNackResponse
-
-	returnMessage = &backend_server_grpc_api.AckNackResponse{
-		Acknack:  true,
-		Comments: "",
-	}
-
-	testInstructionBackendObject.logger.WithFields(logrus.Fields{
-		"id":         "d172be33-f752-4af7-a5cf-3f5ab58eb493",
-		"returnGuid": returnMessage,
-	}).Debug("Leaving 'SaveDomainModelToServer'")
-
-	return returnMessage, nil
 }
